@@ -1,0 +1,24 @@
+/* Modern, simple, WordPress-ish feel */
+
+.hero {
+  background: linear-gradient(135deg, #111 0%, #2b2b2b 100%);
+  color: white;
+  border-radius: 1.25rem;
+}
+
+.card {
+  border: 0;
+  border-radius: 1.25rem;
+}
+
+.btn {
+  border-radius: 0.9rem;
+}
+
+.badge {
+  border-radius: 0.8rem;
+}
+
+.shadow-soft {
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}

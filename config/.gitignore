@@ -1,0 +1,8 @@
+/.bundle
+/db/*.sqlite3
+/log/*
+/tmp/*
+/node_modules
+/vendor/bundle
+/.env
+/config/master.key

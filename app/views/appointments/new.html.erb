@@ -1,0 +1,53 @@
+<h1 class="h3 fw-bold mb-3">Agendar turno de service</h1>
+
+<div class="card shadow-soft">
+  <div class="card-body p-4">
+    <%= form_with model: @appointment, local: true do |f| %>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <%= f.label :full_name, "Nombre y apellido", class: "form-label" %>
+          <%= f.text_field :full_name, class: "form-control" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :phone, "Teléfono", class: "form-label" %>
+          <%= f.text_field :phone, class: "form-control" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :email, "Email", class: "form-label" %>
+          <%= f.email_field :email, class: "form-control" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :service_type, "Tipo de service", class: "form-label" %>
+          <%= f.select :service_type, ["Service básico", "Frenos", "Cambios", "Ruedas", "Armado", "Otro"], {}, class: "form-select" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :preferred_date, "Fecha preferida", class: "form-label" %>
+          <%= f.date_field :preferred_date, class: "form-control" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :preferred_time, "Horario preferido", class: "form-label" %>
+          <%= f.time_field :preferred_time, class: "form-control" %>
+        </div>
+        <div class="col-12">
+          <%= f.label :notes, "Notas (opcional)", class: "form-label" %>
+          <%= f.text_area :notes, class: "form-control", rows: 3 %>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <%= f.submit "Enviar turno", class: "btn btn-dark" %>
+      </div>
+
+      <% if @appointment.errors.any? %>
+        <div class="alert alert-danger mt-3">
+          <div class="fw-bold">Revisá:</div>
+          <ul class="mb-0">
+            <% @appointment.errors.full_messages.each do |m| %>
+              <li><%= m %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

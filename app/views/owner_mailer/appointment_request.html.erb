@@ -1,0 +1,10 @@
+<p>Nuevo turno solicitado en <strong>Mega Bike</strong>.</p>
+
+<ul>
+  <li><strong>Nombre:</strong> <%= @appointment.name %></li>
+  <li><strong>Email:</strong> <%= @appointment.email %></li>
+  <li><strong>Teléfono:</strong> <%= @appointment.phone %></li>
+  <li><strong>Servicio:</strong> <%= @appointment.service_type.humanize %></li>
+  <li><strong>Fecha y hora preferida:</strong> <%= l(@appointment.preferred_at) %></li>
+  <li><strong>Mensaje:</strong> <%= @appointment.message %></li>
+</ul>

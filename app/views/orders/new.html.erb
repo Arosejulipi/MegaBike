@@ -1,0 +1,26 @@
+<h1 class="h3 fw-bold mb-3">Confirmar compra</h1>
+
+<div class="card shadow-soft">
+  <div class="card-body p-4">
+    <p class="text-muted">Esto registra la compra. Después Mega Bike te contacta para coordinar pago y entrega.</p>
+
+    <ul class="list-group mb-3">
+      <% total = 0 %>
+      <% @items.each do |it| %>
+        <% subtotal = it.quantity * it.product.price %>
+        <% total += subtotal %>
+        <li class="list-group-item d-flex justify-content-between">
+          <div><%= it.product.name %> <span class="text-muted">x<%= it.quantity %></span></div>
+          <div>$ <%= subtotal.to_i %></div>
+        </li>
+      <% end %>
+    </ul>
+
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="fw-bold">Total: $ <%= total.to_i %></div>
+      <%= form_with url: orders_path, method: :post, local: true do |f| %>
+        <%= f.submit "Confirmar compra", class: "btn btn-dark" %>
+      <% end %>
+    </div>
+  </div>
+</div>

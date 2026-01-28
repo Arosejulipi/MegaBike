@@ -1,0 +1,15 @@
+<p>Nuevo pedido de presupuesto de bicicleta personalizada en <strong>Mega Bike</strong>.</p>
+
+<ul>
+  <li><strong>Nombre:</strong> <%= @quote.name %></li>
+  <li><strong>Email:</strong> <%= @quote.email %></li>
+  <li><strong>Teléfono:</strong> <%= @quote.phone %></li>
+  <li><strong>Talle:</strong> <%= @quote.frame_size %></li>
+  <li><strong>Color:</strong> <%= @quote.color %></li>
+  <li><strong>Tipo:</strong> <%= @quote.bike_type %></li>
+  <li><strong>Frenos:</strong> <%= @quote.brakes %></li>
+  <li><strong>Transmisión:</strong> <%= @quote.drivetrain %></li>
+  <li><strong>Accesorios:</strong> <%= @quote.accessories.presence || '-' %></li>
+  <li><strong>Comentarios:</strong> <%= @quote.notes.presence || '-' %></li>
+  <li><strong>Estimación vista por el cliente:</strong> <%= number_to_currency(@quote.estimated_total_ars) %></li>
+</ul>

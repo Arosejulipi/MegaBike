@@ -1,0 +1,43 @@
+<div class="card shadow-soft" style="max-width: 700px;">
+  <div class="card-body p-4">
+    <%= form_with model: [:admin, product], local: true do |f| %>
+      <div class="mb-3">
+        <%= f.label :name, "Nombre", class: "form-label" %>
+        <%= f.text_field :name, class: "form-control" %>
+      </div>
+      <div class="mb-3">
+        <%= f.label :description, "Descripción", class: "form-label" %>
+        <%= f.text_area :description, class: "form-control", rows: 4 %>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <%= f.label :price, "Precio", class: "form-label" %>
+          <%= f.number_field :price, step: 1, class: "form-control" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :stock, "Stock", class: "form-label" %>
+          <%= f.number_field :stock, class: "form-control" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :active, "Activo", class: "form-label" %>
+          <%= f.select :active, [["Sí", true], ["No", false]], {}, class: "form-select" %>
+        </div>
+      </div>
+
+      <div class="mt-4 d-flex gap-2">
+        <%= f.submit "Guardar", class: "btn btn-dark" %>
+        <a class="btn btn-outline-dark" href="/admin/products">Volver</a>
+      </div>
+
+      <% if product.errors.any? %>
+        <div class="alert alert-danger mt-3">
+          <ul class="mb-0">
+            <% product.errors.full_messages.each do |m| %>
+              <li><%= m %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

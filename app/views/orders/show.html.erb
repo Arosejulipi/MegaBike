@@ -1,0 +1,18 @@
+<h1 class="h3 fw-bold mb-3">Orden #<%= @order.id %></h1>
+
+<div class="card shadow-soft">
+  <div class="card-body p-4">
+    <div class="text-muted mb-3">Estado: <span class="badge text-bg-secondary"><%= @order.status %></span></div>
+
+    <ul class="list-group mb-3">
+      <% @order.order_items.each do |it| %>
+        <li class="list-group-item d-flex justify-content-between">
+          <div><%= it.product.name %> <span class="text-muted">x<%= it.quantity %></span></div>
+          <div>$ <%= (it.quantity * it.unit_price).to_i %></div>
+        </li>
+      <% end %>
+    </ul>
+
+    <div class="fw-bold">Total: $ <%= @order.total.to_i %></div>
+  </div>
+</div>

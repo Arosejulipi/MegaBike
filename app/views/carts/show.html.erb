@@ -1,0 +1,56 @@
+<h1 class="h3 fw-bold mb-3">Carrito</h1>
+
+<% if @items.empty? %>
+  <div class="card shadow-soft">
+    <div class="card-body p-4">
+      <p class="mb-0">Tu carrito está vacío. <a href="/products">Ver productos</a></p>
+    </div>
+  </div>
+<% else %>
+  <div class="card shadow-soft">
+    <div class="card-body p-4">
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th class="text-end">Precio</th>
+              <th class="text-end">Cantidad</th>
+              <th class="text-end">Subtotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% total = 0 %>
+            <% @items.each do |it| %>
+              <% subtotal = it.quantity * it.product.price %>
+              <% total += subtotal %>
+              <tr>
+                <td><%= it.product.name %></td>
+                <td class="text-end">$ <%= it.product.price.to_i %></td>
+                <td class="text-end"><%= it.quantity %></td>
+                <td class="text-end">$ <%= subtotal.to_i %></td>
+                <td class="text-end">
+                  <%= form_with url: remove_item_cart_path, method: :post, local: true do |f| %>
+                    <%= hidden_field_tag :product_id, it.product.id %>
+                    <%= f.submit "Quitar", class: "btn btn-sm btn-outline-danger" %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+        <div class="fw-bold">Total: $ <%= total.to_i %></div>
+        <div class="d-flex gap-2">
+          <%= form_with url: clear_cart_path, method: :post, local: true do |f| %>
+            <%= f.submit "Vaciar", class: "btn btn-outline-dark" %>
+          <% end %>
+          <a class="btn btn-dark" href="/orders/new">Continuar compra</a>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
