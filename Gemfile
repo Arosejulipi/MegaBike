@@ -8,10 +8,6 @@ group :production do
   gem "pg", "~> 1.5"
 end
 
-# Para hosting tipo Render (PostgreSQL en producción)
-group :production do
-  gem "pg", "~> 1.5"
-end
 
 gem "puma", "~> 6.0"
 
