@@ -3,6 +3,11 @@
 Rails.application.routes.draw do
   root "pages#home"
 
+  # Temporary debug route: only mounted when EXPOSE_ERRORS_PUBLIC=1
+  if ENV['EXPOSE_ERRORS_PUBLIC'] == '1'
+    get "/__trigger_error", to: "debug#trigger"
+  end
+
   get "/nosotros", to: "pages#about"
 
   resources :products, only: %i[index show]
