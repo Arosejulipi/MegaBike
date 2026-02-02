@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   # Temporary debug route: only mounted when EXPOSE_ERRORS_PUBLIC=1
   if ENV['EXPOSE_ERRORS_PUBLIC'] == '1'
     get "/__trigger_error", to: "debug#trigger"
+    get "/__debug_status", to: "debug#status"
   end
 
   get "/nosotros", to: "pages#about"
