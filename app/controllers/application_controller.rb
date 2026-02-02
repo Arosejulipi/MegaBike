@@ -3,6 +3,21 @@
 class ApplicationController < ActionController::Base
   helper_method :current_user, :logged_in?, :admin?
 
+  # Temporary production helper to capture unhandled exceptions into a public file
+  # Enable by setting EXPOSE_ERRORS_PUBLIC=1 in Render environment variables.
+  if ENV['EXPOSE_ERRORS_PUBLIC'] == '1'
+    rescue_from StandardError do |exception|
+      begin
+        log_path = Rails.root.join('public', 'last_error.log')
+        content = ["Exception: #{exception.class}: #{exception.message}", *exception.backtrace].join("\n")
+        File.write(log_path, content)
+      rescue => write_err
+        Rails.logger.error "Failed to write public error log: ", write_err
+      end
+      raise exception
+    end
+  end
+
   private
 
   def current_user
