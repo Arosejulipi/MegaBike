@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class OwnerMailer < ApplicationMailer
-  ADMIN_EMAILS = ENV.fetch("ADMIN_EMAILS", ENV.fetch("MEGABIKE_OWNER_EMAIL", "duenios@megabike.com"))
+  ADMIN_EMAILS = (ENV["ADMIN_EMAILS"] || ENV["MEGABIKE_OWNER_EMAIL"] || "duenios@megabike.com")
 
   def appointment_request(appointment)
     @appointment = appointment
