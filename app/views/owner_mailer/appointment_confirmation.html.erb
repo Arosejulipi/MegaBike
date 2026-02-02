@@ -6,7 +6,7 @@
   <li><strong>Servicio:</strong> <%= @appointment.service_type.humanize %></li>
   <li><strong>Fecha preferida:</strong> <%= @appointment.preferred_date %></li>
   <li><strong>Hora preferida:</strong> <%= @appointment.preferred_time %></li>
-  <li><strong>Teléfono:</strong> <%= @appointment.phone %></li>
+  <li><strong>Teléfono:</strong> <%= @appointment.phone.presence || "(no proporcionado)" %></li>
   <li><strong>Notas:</strong> <%= @appointment.notes.presence || "(sin notas)" %></li>
 </ul>
 

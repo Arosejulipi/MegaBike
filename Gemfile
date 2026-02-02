@@ -13,6 +13,9 @@ gem "puma", "~> 6.0"
 
 gem "bcrypt", "~> 3.1"
 
+# Asset pipeline for Rails 7
+gem "sprockets-rails"
+
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 group :development do
