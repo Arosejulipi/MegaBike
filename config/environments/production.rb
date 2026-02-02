@@ -40,7 +40,6 @@ end
 # Ensure ActiveJob has a working adapter in Render when Sidekiq/Redis aren't configured.
 # :async runs jobs in background threads of the web process (ok for low-volume apps).
 config.active_job.queue_adapter = (ENV.fetch('QUEUE_ADAPTER', 'async')).to_sym
-}
 
 
   config.log_level = :info
