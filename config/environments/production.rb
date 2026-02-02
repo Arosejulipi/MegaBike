@@ -41,6 +41,9 @@ end
 # :async runs jobs in background threads of the web process (ok for low-volume apps).
 config.active_job.queue_adapter = (ENV.fetch('QUEUE_ADAPTER', 'async')).to_sym
 
+# Active Storage service (use 'local' by default). To change, set ACTIVE_STORAGE_SERVICE env var.
+config.active_storage.service = (ENV['ACTIVE_STORAGE_SERVICE'] || 'local').to_sym
+
 
   config.log_level = :info
   config.active_support.report_deprecations = false
