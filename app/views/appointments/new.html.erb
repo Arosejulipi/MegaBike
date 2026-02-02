@@ -4,34 +4,67 @@
   <div class="card-body p-4">
     <%= form_with model: @appointment, local: true do |f| %>
       <div class="row g-3">
-        <div class="col-md-6">
-          <%= f.label :full_name, "Nombre y apellido", class: "form-label" %>
-          <%= f.text_field :full_name, class: "form-control" %>
-        </div>
-        <div class="col-md-6">
-          <%= f.label :phone, "Teléfono", class: "form-label" %>
-          <%= f.text_field :phone, class: "form-control" %>
-        </div>
-        <div class="col-md-6">
-          <%= f.label :email, "Email", class: "form-label" %>
-          <%= f.email_field :email, class: "form-control" %>
-        </div>
-        <div class="col-md-6">
-          <%= f.label :service_type, "Tipo de service", class: "form-label" %>
-          <%= f.select :service_type, ["Service básico", "Frenos", "Cambios", "Ruedas", "Armado", "Otro"], {}, class: "form-select" %>
-        </div>
-        <div class="col-md-6">
-          <%= f.label :preferred_date, "Fecha preferida", class: "form-label" %>
-          <%= f.date_field :preferred_date, class: "form-control" %>
-        </div>
-        <div class="col-md-6">
-          <%= f.label :preferred_time, "Horario preferido", class: "form-label" %>
-          <%= f.time_field :preferred_time, class: "form-control" %>
-        </div>
-        <div class="col-12">
-          <%= f.label :notes, "Notas (opcional)", class: "form-label" %>
-          <%= f.text_area :notes, class: "form-control", rows: 3 %>
-        </div>
+        <% if logged_in? %>
+          <div class="col-md-6">
+            <%= f.label :full_name, "Nombre y apellido", class: "form-label" %>
+            <%= f.text_field :full_name, value: (f.object.full_name.presence || current_user.name), class: "form-control" %>
+          </div>
+
+          <div class="col-md-6">
+            <%= f.label :service_type, "Tipo de mantenimiento", class: "form-label" %>
+            <%= f.select :service_type, ["Service básico", "Frenos", "Cambios", "Ruedas", "Armado", "Otro"], {}, class: "form-select" %>
+          </div>
+
+          <div class="col-md-6">
+            <%= f.label :preferred_date, "Fecha preferida (turno)", class: "form-label" %>
+            <%= f.date_field :preferred_date, class: "form-control" %>
+          </div>
+
+          <div class="col-md-6">
+            <%= f.label :preferred_time, "Horario preferido", class: "form-label" %>
+            <%= f.time_field :preferred_time, class: "form-control" %>
+          </div>
+
+          <div class="col-12">
+            <%= f.label :notes, "Mensaje (opcional)", class: "form-label" %>
+            <%= f.text_area :notes, class: "form-control", rows: 3 %>
+          </div>
+        <% else %>
+          <div class="col-md-6">
+            <%= f.label :full_name, "Nombre y apellido", class: "form-label" %>
+            <%= f.text_field :full_name, class: "form-control" %>
+          </div>
+
+          <div class="col-md-6">
+            <%= f.label :phone, "Teléfono", class: "form-label" %>
+            <%= f.text_field :phone, class: "form-control" %>
+          </div>
+
+          <div class="col-md-6">
+            <%= f.label :email, "Email", class: "form-label" %>
+            <%= f.email_field :email, class: "form-control" %>
+          </div>
+
+          <div class="col-md-6">
+            <%= f.label :service_type, "Tipo de mantenimiento", class: "form-label" %>
+            <%= f.select :service_type, ["Service básico", "Frenos", "Cambios", "Ruedas", "Armado", "Otro"], {}, class: "form-select" %>
+          </div>
+
+          <div class="col-md-6">
+            <%= f.label :preferred_date, "Fecha preferida (turno)", class: "form-label" %>
+            <%= f.date_field :preferred_date, class: "form-control" %>
+          </div>
+
+          <div class="col-md-6">
+            <%= f.label :preferred_time, "Horario preferido", class: "form-label" %>
+            <%= f.time_field :preferred_time, class: "form-control" %>
+          </div>
+
+          <div class="col-12">
+            <%= f.label :notes, "Mensaje (opcional)", class: "form-label" %>
+            <%= f.text_area :notes, class: "form-control", rows: 3 %>
+          </div>
+        <% end %>
       </div>
 
       <div class="mt-4">

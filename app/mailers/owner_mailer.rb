@@ -1,11 +1,17 @@
 # frozen_string_literal: true
 
 class OwnerMailer < ApplicationMailer
-  OWNER_EMAIL = ENV.fetch("MEGABIKE_OWNER_EMAIL", "duenios@megabike.com")
+  ADMIN_EMAILS = ENV.fetch("ADMIN_EMAILS", ENV.fetch("MEGABIKE_OWNER_EMAIL", "duenios@megabike.com"))
 
   def appointment_request(appointment)
     @appointment = appointment
-    mail(to: OWNER_EMAIL, subject: "Nuevo turno de servicio - Mega Bike")
+    recipients = ADMIN_EMAILS.split(/,\s*/)
+    mail(to: recipients, subject: "Nuevo turno de servicio - Mega Bike")
+  end
+
+  def appointment_confirmation(appointment)
+    @appointment = appointment
+    mail(to: @appointment.email, subject: "Confirmación de turno - Mega Bike")
   end
 
   def custom_quote_request(custom_quote)
