@@ -78,6 +78,15 @@ class DebugController < ApplicationController
 
     render plain: "Test emails sent to #{recipient}", status: :ok
   rescue => e
+    if ENV['EXPOSE_ERRORS_PUBLIC'] == '1'
+      begin
+        log_path = Rails.root.join('public', 'last_error.log')
+        File.write(log_path, "Exception: #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}\n")
+      rescue => fw
+        Rails.logger.error "Failed writing last_error.log: #{fw.class}: #{fw.message}"
+      end
+    end
+
     render plain: "Error sending test emails: #{e.class}: #{e.message}", status: :internal_server_error
   end
 end
