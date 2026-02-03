@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     get "/__trigger_error", to: "debug#trigger"
     get "/__debug_status", to: "debug#status"
     get "/__diagnose", to: "debug#diagnose"
+    get "/__send_test_email", to: "debug#send_test_email"
   end
 
   get "/nosotros", to: "pages#about"

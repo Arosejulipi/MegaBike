@@ -59,4 +59,25 @@ class DebugController < ApplicationController
 
     render json: results
   end
+
+  # Send test emails immediately (deliver_now). Only when EXPOSE_ERRORS_PUBLIC=1
+  def send_test_email
+    return head :forbidden unless ENV['EXPOSE_ERRORS_PUBLIC'] == '1'
+
+    recipient = params[:email].presence || ENV['SMTP_TEST_RECIPIENT'] || 'admin@megabike.com'
+    appt = Appointment.new(
+      full_name: "Debug Tester",
+      email: recipient,
+      service_type: 'Debug',
+      preferred_date: Date.today,
+      preferred_time: '10:00'
+    )
+
+    OwnerMailer.appointment_request(appt).deliver_now
+    OwnerMailer.appointment_confirmation(appt).deliver_now
+
+    render plain: "Test emails sent to #{recipient}", status: :ok
+  rescue => e
+    render plain: "Error sending test emails: #{e.class}: #{e.message}", status: :internal_server_error
+  end
 end
