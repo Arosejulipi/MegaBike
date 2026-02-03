@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   if ENV['EXPOSE_ERRORS_PUBLIC'] == '1'
     get "/__trigger_error", to: "debug#trigger"
     get "/__debug_status", to: "debug#status"
+    get "/__diagnose", to: "debug#diagnose"
   end
 
   get "/nosotros", to: "pages#about"
