@@ -10,27 +10,19 @@ Rails.application.configure do
 
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
-# --- Action Mailer (SMTP Gmail) ---
-config.action_mailer.perform_caching = false
-config.action_mailer.delivery_method = :smtp
-config.action_mailer.raise_delivery_errors = true
-config.action_mailer.perform_deliveries = true
+  # Action Mailer: use Postmark (API) on Render. If not configured, disable deliveries.
+  config.action_mailer.perform_caching = false
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.perform_deliveries = true
 
-config.action_mailer.smtp_settings = {
-  address: ENV.fetch("SMTP_ADDRESS", "smtp.gmail.com"),
-  port: ENV.fetch("SMTP_PORT", "587").to_i,
-  domain: ENV.fetch("SMTP_DOMAIN", "gmail.com"),
-  user_name: ENV["SMTP_USERNAME"],
-  password: ENV["SMTP_PASSWORD"],
-  authentication: (ENV["SMTP_AUTHENTICATION"] || "plain").to_sym,
-  enable_starttls_auto: (ENV.fetch("SMTP_ENABLE_STARTTLS_AUTO", "true") == "true")
-}
-
-# If Postmark is configured (preferred on Render), override delivery method
-if ENV['POSTMARK_API_TOKEN'].present?
-  config.action_mailer.delivery_method = :postmark
-  config.action_mailer.postmark_settings = { api_token: ENV['POSTMARK_API_TOKEN'] }
-end
+  if ENV['POSTMARK_API_TOKEN'].present?
+    config.action_mailer.delivery_method = :postmark
+    config.action_mailer.postmark_settings = { api_token: ENV['POSTMARK_API_TOKEN'] }
+  else
+    # No mail provider configured: disable deliveries to avoid Net::OpenTimeout or other timeouts
+    config.action_mailer.perform_deliveries = false
+    Rails.logger.warn "ActionMailer: POSTMARK_API_TOKEN not set. Emails are disabled in production."
+  end
 
 # Para que en links de mails use tu dominio de Render
 config.action_mailer.default_url_options = {
