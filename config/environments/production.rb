@@ -26,6 +26,12 @@ config.action_mailer.smtp_settings = {
   enable_starttls_auto: (ENV.fetch("SMTP_ENABLE_STARTTLS_AUTO", "true") == "true")
 }
 
+# If Postmark is configured (preferred on Render), override delivery method
+if ENV['POSTMARK_API_TOKEN'].present?
+  config.action_mailer.delivery_method = :postmark
+  config.action_mailer.postmark_settings = { api_token: ENV['POSTMARK_API_TOKEN'] }
+end
+
 # Para que en links de mails use tu dominio de Render
 config.action_mailer.default_url_options = {
   host: ENV["APP_HOST"] || ENV.fetch("APP_HOST", "localhost"), # ejemplo: megabike.onrender.com
