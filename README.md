@@ -66,25 +66,51 @@ Backend recomendado (gratis): Google Apps Script (usa tu Gmail).
 ```javascript
 const TOKEN = PropertiesService.getScriptProperties().getProperty("EMAIL_WEBHOOK_TOKEN") || "";
 
-function doPost(e) {
-  try {
-    const auth = (e && e.parameter && e.parameter.token) ? e.parameter.token : "";
-    const header = (e && e.headers && (e.headers.Authorization || e.headers.authorization)) || "";
-    const bearer = header.startsWith("Bearer ") ? header.slice(7) : "";
-    const token = bearer || auth || "";
+function handleSend(to, subject, textBody, htmlBody) {
+  GmailApp.sendEmail(to, subject, textBody || " ", { htmlBody: htmlBody || "" });
+  return ContentService.createTextOutput("OK").setMimeType(ContentService.MimeType.TEXT);
+}
 
-    if (TOKEN && token !== TOKEN) {
+function isAuthorized(e) {
+  const auth = (e && e.parameter && e.parameter.token) ? e.parameter.token : "";
+  const header = (e && e.headers && (e.headers.Authorization || e.headers.authorization)) || "";
+  const bearer = header.startsWith("Bearer ") ? header.slice(7) : "";
+  const token = bearer || auth || "";
+  return !(TOKEN && token !== TOKEN);
+}
+
+// GET is recommended (works reliably with Apps Script hosting redirects).
+function doGet(e) {
+  try {
+    if (!isAuthorized(e)) {
       return ContentService.createTextOutput("Unauthorized").setMimeType(ContentService.MimeType.TEXT);
     }
 
-    const data = JSON.parse(e.postData.contents || "{}");
+    const to = ((e && e.parameter && e.parameter.to) || "").toString();
+    const subject = ((e && e.parameter && e.parameter.subject) || "").toString();
+    const htmlBody = ((e && e.parameter && e.parameter.html) || "").toString();
+    const textBody = ((e && e.parameter && e.parameter.text) || "").toString();
+
+    return handleSend(to, subject, textBody, htmlBody);
+  } catch (err) {
+    return ContentService.createTextOutput("ERR: " + err).setMimeType(ContentService.MimeType.TEXT);
+  }
+}
+
+// Optional: POST support (not always reliable depending on redirects)
+function doPost(e) {
+  try {
+    if (!isAuthorized(e)) {
+      return ContentService.createTextOutput("Unauthorized").setMimeType(ContentService.MimeType.TEXT);
+    }
+
+    const data = JSON.parse((e && e.postData && e.postData.contents) || "{}");
     const to = (data.to || "").toString();
     const subject = (data.subject || "").toString();
     const htmlBody = (data.html || "").toString();
     const textBody = (data.text || "").toString();
 
-    GmailApp.sendEmail(to, subject, textBody || " ", { htmlBody: htmlBody });
-    return ContentService.createTextOutput("OK").setMimeType(ContentService.MimeType.TEXT);
+    return handleSend(to, subject, textBody, htmlBody);
   } catch (err) {
     return ContentService.createTextOutput("ERR: " + err).setMimeType(ContentService.MimeType.TEXT);
   }

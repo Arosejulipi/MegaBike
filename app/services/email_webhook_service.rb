@@ -2,6 +2,7 @@
 
 require "net/http"
 require "json"
+require "cgi"
 
 # Lightweight email gateway over HTTPS.
 # Intended for platforms where SMTP is blocked (e.g., Render free tier).
@@ -26,6 +27,9 @@ class EmailWebhookService
     # Returns a hash:
     # { success: true/false, code: Integer, body: String, final_url: String, chain: [{url, code, location}] }
     def request_email(to:, subject:, html_body:, text_body: nil, from: nil)
+      raw_method = ENV["EMAIL_WEBHOOK_METHOD"].to_s.strip.downcase
+      method = raw_method.empty? ? "get" : raw_method
+
       payload = {
         to: Array(to).join(","),
         subject: subject.to_s,
@@ -38,7 +42,13 @@ class EmailWebhookService
       token = nil if token.empty?
 
       uri = URI(ENV.fetch("EMAIL_WEBHOOK_URL"))
-      result = post_json_with_redirects(uri, payload, token: token)
+      result =
+        if method == "post"
+          post_json_with_redirects(uri, payload, token: token)
+        else
+          get_with_query(uri, payload, token: token)
+        end
+
       response = result[:response]
 
       code = response.code.to_i
@@ -50,14 +60,41 @@ class EmailWebhookService
         code: code,
         body: body,
         final_url: result[:final_url].to_s,
-        chain: result[:chain]
+        chain: result[:chain],
+        method: method
       }
     rescue StandardError => e
       Rails.logger.error("EmailWebhookService exception #{e.class}: #{e.message}")
-      { success: false, code: 0, body: "#{e.class}: #{e.message}", final_url: "", chain: [] }
+      raw_method = ENV["EMAIL_WEBHOOK_METHOD"].to_s.strip.downcase
+      method = raw_method.empty? ? "get" : raw_method
+      { success: false, code: 0, body: "#{e.class}: #{e.message}", final_url: "", chain: [], method: method }
     end
 
     private
+
+    def get_with_query(uri, payload, token:)
+      current_uri = uri.dup
+      chain = []
+
+      # Prefer token as query param; headers in Apps Script can be flaky for doGet.
+      query_hash = payload.dup
+      query_hash[:token] = token if token
+
+      current_uri.query = URI.encode_www_form(query_hash)
+
+      response = Net::HTTP.start(
+        current_uri.hostname,
+        current_uri.port,
+        use_ssl: current_uri.scheme == "https",
+        open_timeout: (ENV["EMAIL_WEBHOOK_OPEN_TIMEOUT"].to_s.empty? ? 5 : ENV["EMAIL_WEBHOOK_OPEN_TIMEOUT"].to_i),
+        read_timeout: (ENV["EMAIL_WEBHOOK_READ_TIMEOUT"].to_s.empty? ? 20 : ENV["EMAIL_WEBHOOK_READ_TIMEOUT"].to_i)
+      ) do |http|
+        http.get(current_uri.request_uri)
+      end
+
+      chain << { url: current_uri.to_s, code: response.code.to_i, location: response["location"].to_s }
+      { response: response, final_url: current_uri.to_s, chain: chain }
+    end
 
     def post_json_with_redirects(uri, payload, token:)
       redirects = 0
