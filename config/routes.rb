@@ -33,6 +33,11 @@ Rails.application.routes.draw do
   post "/login", to: "sessions#create"
   delete "/logout", to: "sessions#destroy"
 
+  get "/password/reset", to: "password_resets#new", as: :new_password_reset
+  post "/password/reset", to: "password_resets#create", as: :password_resets
+  get "/password/reset/:token", to: "password_resets#edit", as: :edit_password_reset
+  patch "/password/reset/:token", to: "password_resets#update", as: :password_reset
+
   get "/registro", to: "registrations#new"
   post "/registro", to: "registrations#create"
 

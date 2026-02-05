@@ -1,0 +1,30 @@
+<h1 class="h3 fw-bold mb-3">Elegir nueva contrasena</h1>
+
+<div class="card shadow-soft" style="max-width: 520px;">
+  <div class="card-body p-4">
+    <%= form_with url: password_reset_path(@token), method: :patch, local: true do |f| %>
+      <div class="mb-3">
+        <%= label_tag "user_password", "Nueva contrasena", class: "form-label" %>
+        <%= password_field_tag "user[password]", nil, class: "form-control", required: true %>
+      </div>
+      <div class="mb-3">
+        <%= label_tag "user_password_confirmation", "Confirmar contrasena", class: "form-label" %>
+        <%= password_field_tag "user[password_confirmation]", nil, class: "form-control", required: true %>
+      </div>
+
+      <button class="btn btn-dark w-100" type="submit">Guardar</button>
+    <% end %>
+
+    <% if @user&.errors&.any? %>
+      <div class="alert alert-danger mt-3">
+        <div class="fw-bold">Revisa:</div>
+        <ul class="mb-0">
+          <% @user.errors.full_messages.each do |m| %>
+            <li><%= m %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+</div>
+

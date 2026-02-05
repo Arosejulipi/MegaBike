@@ -1,9 +1,8 @@
-<p>Nueva solicitud de bici personalizada en <strong>Mega Bike</strong>.</p>
+<p>Hola <%= @custom_quote.full_name %>,</p>
+
+<p>Gracias por tu solicitud de bici personalizada en <strong>Mega Bike</strong>. Estos son los datos que recibimos:</p>
 
 <ul>
-  <li><strong>Nombre:</strong> <%= @custom_quote.full_name %></li>
-  <li><strong>Email:</strong> <%= @custom_quote.email %></li>
-  <li><strong>Telefono:</strong> <%= @custom_quote.phone %></li>
   <li><strong>Tipo de bici:</strong> <%= @custom_quote.bike_type %></li>
   <li><strong>Talle de cuadro:</strong> <%= @custom_quote.frame_size.presence || "-" %></li>
   <li><strong>Color:</strong> <%= @custom_quote.color.presence || "-" %></li>
@@ -12,4 +11,6 @@
   <li><strong>Rango de presupuesto:</strong> <%= @custom_quote.budget_range %></li>
   <li><strong>Detalles extra:</strong> <%= @custom_quote.extra_notes.presence || "-" %></li>
 </ul>
+
+<p>Te vamos a contactar a la brevedad con un presupuesto.</p>
 

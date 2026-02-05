@@ -1,0 +1,18 @@
+<h1 class="h3 fw-bold mb-3">Recuperar contrasena</h1>
+
+<div class="card shadow-soft" style="max-width: 520px;">
+  <div class="card-body p-4">
+    <p class="text-muted">Te vamos a enviar un link a tu email para elegir una nueva contrasena.</p>
+
+    <%= form_with url: password_resets_path, method: :post, local: true do %>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <%= email_field_tag :email, params[:email], class: "form-control", required: true %>
+      </div>
+      <button class="btn btn-dark w-100" type="submit">Enviar link</button>
+    <% end %>
+
+    <div class="text-muted small mt-3"><a href="/login">Volver a ingresar</a></div>
+  </div>
+</div>
+

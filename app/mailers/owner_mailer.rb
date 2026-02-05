@@ -19,5 +19,9 @@ class OwnerMailer < ApplicationMailer
     recipients = ADMIN_EMAILS.split(/,\s*/).reject(&:blank?)
     mail(to: recipients, subject: "Nueva solicitud de bici personalizada - Mega Bike")
   end
-end
 
+  def custom_quote_confirmation(custom_quote)
+    @custom_quote = custom_quote
+    mail(to: @custom_quote.email, subject: "Recibimos tu pedido - Mega Bike")
+  end
+end
