@@ -21,13 +21,23 @@ class AppointmentNotifier
   private
 
   def notify_owner_by_email
-    OwnerMailer.appointment_request(@appointment).deliver_now
+    delivery = OwnerMailer.appointment_request(@appointment)
+    if EmailWebhookService.configured?
+      send_via_webhook(delivery)
+    else
+      delivery.deliver_now
+    end
   rescue StandardError => e
     Rails.logger.error("AppointmentNotifier owner email failed: #{e.class}: #{e.message}")
   end
 
   def notify_client_by_email
-    OwnerMailer.appointment_confirmation(@appointment).deliver_now
+    delivery = OwnerMailer.appointment_confirmation(@appointment)
+    if EmailWebhookService.configured?
+      send_via_webhook(delivery)
+    else
+      delivery.deliver_now
+    end
   rescue StandardError => e
     Rails.logger.error("AppointmentNotifier client email failed: #{e.class}: #{e.message}")
   end
@@ -50,6 +60,19 @@ class AppointmentNotifier
 
   def owner_numbers
     OWNER_WHATSAPP_TO.split(/,\s*/).reject(&:blank?)
+  end
+
+  def send_via_webhook(message_delivery)
+    msg = message_delivery.message
+    html = msg.body.to_s
+    text = ActionController::Base.helpers.strip_tags(html.to_s)
+    EmailWebhookService.send_email(
+      to: msg.to,
+      subject: msg.subject,
+      html_body: html,
+      text_body: text,
+      from: msg.from&.first
+    )
   end
 
   def owner_message

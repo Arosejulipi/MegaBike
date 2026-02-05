@@ -59,7 +59,8 @@ class DebugController < ApplicationController
       smtp_username_set: ENV["SMTP_USERNAME"].present?,
       smtp_password_set: ENV["SMTP_PASSWORD"].present?,
       admin_emails_set: ENV["ADMIN_EMAILS"].present?,
-      default_from_email_set: ENV["DEFAULT_FROM_EMAIL"].present?
+      default_from_email_set: ENV["DEFAULT_FROM_EMAIL"].present?,
+      email_webhook_set: ENV["EMAIL_WEBHOOK_URL"].present?
     }
 
     # Show mailer config summary (no secrets)
@@ -85,8 +86,12 @@ class DebugController < ApplicationController
       preferred_time: '10:00'
     )
 
-    OwnerMailer.appointment_request(appt).deliver_now
-    OwnerMailer.appointment_confirmation(appt).deliver_now
+    if EmailWebhookService.configured?
+      AppointmentNotifier.notify(appt)
+    else
+      OwnerMailer.appointment_request(appt).deliver_now
+      OwnerMailer.appointment_confirmation(appt).deliver_now
+    end
 
     render plain: "Test emails sent to #{recipient}", status: :ok
   rescue => e
