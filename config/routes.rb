@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     get "/__diagnose", to: "debug#diagnose"
     get "/__send_test_email", to: "debug#send_test_email"
     get "/__test_email_webhook", to: "debug#test_email_webhook"
+    get "/__send_password_reset", to: "debug#send_password_reset"
   end
 
   get "/nosotros", to: "pages#about"

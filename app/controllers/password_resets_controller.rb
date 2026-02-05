@@ -5,7 +5,7 @@ class PasswordResetsController < ApplicationController
 
   def create
     email = params[:email].to_s.downcase.strip
-    user = User.find_by(email: email)
+    user = User.where("lower(email) = ?", email).first
 
     if user
       token = user.signed_id(purpose: :password_reset, expires_in: 2.hours)
@@ -41,4 +41,3 @@ class PasswordResetsController < ApplicationController
     params.require(:user).permit(:password, :password_confirmation)
   end
 end
-

@@ -122,4 +122,18 @@ class DebugController < ApplicationController
 
     render json: result.merge(to: recipient), status: (result[:success] ? :ok : :bad_gateway)
   end
+
+  # Debug helper: send password reset email to an existing user.
+  def send_password_reset
+    return head :forbidden unless ENV['EXPOSE_ERRORS_PUBLIC'] == '1'
+
+    email = params[:email].to_s.downcase.strip
+    user = User.where("lower(email) = ?", email).first
+    return render json: { ok: false, reason: "user_not_found" }, status: :not_found unless user
+
+    token = user.signed_id(purpose: :password_reset, expires_in: 2.hours)
+    ok = MailerDeliveryService.deliver(UserMailer.password_reset(user, token))
+
+    render json: { ok: ok, to: email }, status: (ok ? :ok : :bad_gateway)
+  end
 end
