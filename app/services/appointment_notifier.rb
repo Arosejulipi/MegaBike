@@ -21,13 +21,13 @@ class AppointmentNotifier
   private
 
   def notify_owner_by_email
-    OwnerMailer.appointment_request(@appointment).deliver_later
+    OwnerMailer.appointment_request(@appointment).deliver_now
   rescue StandardError => e
     Rails.logger.error("AppointmentNotifier owner email failed: #{e.class}: #{e.message}")
   end
 
   def notify_client_by_email
-    OwnerMailer.appointment_confirmation(@appointment).deliver_later
+    OwnerMailer.appointment_confirmation(@appointment).deliver_now
   rescue StandardError => e
     Rails.logger.error("AppointmentNotifier client email failed: #{e.class}: #{e.message}")
   end

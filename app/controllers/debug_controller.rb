@@ -54,7 +54,19 @@ class DebugController < ApplicationController
     results[:env] = {
       rails_env: ENV['RAILS_ENV'],
       app_host: ENV['APP_HOST'],
-      expose: ENV['EXPOSE_ERRORS_PUBLIC']
+      expose: ENV['EXPOSE_ERRORS_PUBLIC'],
+      smtp_address_set: ENV["SMTP_ADDRESS"].present?,
+      smtp_username_set: ENV["SMTP_USERNAME"].present?,
+      smtp_password_set: ENV["SMTP_PASSWORD"].present?,
+      admin_emails_set: ENV["ADMIN_EMAILS"].present?,
+      default_from_email_set: ENV["DEFAULT_FROM_EMAIL"].present?
+    }
+
+    # Show mailer config summary (no secrets)
+    results[:mailer] = {
+      perform_deliveries: Rails.application.config.action_mailer.perform_deliveries,
+      raise_delivery_errors: Rails.application.config.action_mailer.raise_delivery_errors,
+      delivery_method: Rails.application.config.action_mailer.delivery_method.to_s
     }
 
     render json: results
