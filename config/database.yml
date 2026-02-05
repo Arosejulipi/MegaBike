@@ -17,3 +17,5 @@ production:
   encoding: unicode
   url: <%= ENV["DATABASE_URL"] %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+  # Fail fast instead of hanging on unreachable DB (helps avoid Render build timeouts).
+  connect_timeout: <%= ENV.fetch("DB_CONNECT_TIMEOUT", 5) %>
