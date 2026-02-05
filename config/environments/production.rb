@@ -14,9 +14,8 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_deliveries = true
 
-  # Email provider selection (Render):
-  # - If SMTP_ADDRESS is configured we use SMTP (works with Gmail/Outlook/etc).
-  # - Otherwise, optional Postmark API.
+  # Email (Render): SMTP only.
+  # Note: Postmark is intentionally NOT used, even if POSTMARK_API_TOKEN exists.
   if ENV["SMTP_ADDRESS"].present?
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings = {
@@ -28,13 +27,10 @@ Rails.application.configure do
       authentication: (ENV["SMTP_AUTHENTICATION"].presence || "plain"),
       enable_starttls_auto: (ENV.fetch("SMTP_ENABLE_STARTTLS_AUTO", "true") == "true")
     }.compact
-  elsif ENV["POSTMARK_API_TOKEN"].present?
-    config.action_mailer.delivery_method = :postmark
-    config.action_mailer.postmark_settings = { api_token: ENV["POSTMARK_API_TOKEN"] }
   else
     # Avoid timeouts if no provider is configured.
     config.action_mailer.perform_deliveries = false
-    Rails.logger.warn "ActionMailer: SMTP_ADDRESS/POSTMARK_API_TOKEN not set. Emails are disabled in production."
+    Rails.logger.warn "ActionMailer: SMTP_ADDRESS not set. Emails are disabled in production."
   end
 
   # For absolute links in emails
@@ -56,4 +52,3 @@ Rails.application.configure do
   config.log_level = :info
   config.active_support.report_deprecations = false
 end
-

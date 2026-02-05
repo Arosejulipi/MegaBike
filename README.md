@@ -49,3 +49,5 @@ SMTP (Gmail):
 - `SMTP_ENABLE_STARTTLS_AUTO` = `true`
 
 Nota: para obtener `SMTP_PASSWORD` en Gmail, Google pide tener activada la verificacion en 2 pasos y luego crear una "contrasena de aplicacion".
+
+Importante: no uses Postmark. Si en Render tenes cargada la variable `POSTMARK_API_TOKEN`, borrala para evitar que el deploy anterior intente usar Postmark.
