@@ -13,9 +13,8 @@ class AppointmentsController < ApplicationController
     end
 
     if @appointment.save
-      OwnerMailer.appointment_request(@appointment).deliver_later
-      OwnerMailer.appointment_confirmation(@appointment).deliver_later
-      redirect_to root_path, notice: "Listo 🙌 Te agendamos el turno y avisamos a Mega Bike."
+      AppointmentNotifier.notify(@appointment)
+      redirect_to root_path, notice: "Listo! Te agendamos el turno y te enviamos el detalle por email."
     else
       render :new, status: :unprocessable_entity
     end
@@ -27,3 +26,4 @@ class AppointmentsController < ApplicationController
     params.require(:appointment).permit(:full_name, :email, :phone, :service_type, :preferred_date, :preferred_time, :notes)
   end
 end
+

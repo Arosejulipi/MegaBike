@@ -1,0 +1,31 @@
+# Rails / Ruby
+/.bundle/
+/vendor/bundle/
+
+# Logs & temp
+/log/*
+!/log/.keep
+/tmp/*
+!/tmp/.keep
+
+# SQLite (dev)
+/db/*.sqlite3
+/db/*.sqlite3-*
+/db/*.sqlite3-*
+
+# ActiveStorage local files (if you use local disk in dev)
+/storage/*
+!/storage/.keep
+
+# Env / secrets
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+

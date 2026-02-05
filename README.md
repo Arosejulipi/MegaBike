@@ -1,42 +1,51 @@
 # Mega Bike (Ruby on Rails)
 
-Aplicación web para una bicicletería llamada **Mega Bike**.
+Aplicacion web para una bicicleteria llamada **Mega Bike**.
 
 Incluye:
 - Home / Nosotros
-- Productos (público, sin registro) + carrito + “compra” simple (sin pasarela de pago)
-- Servicios: agenda de turnos + email al dueño
-- Personalizado: presupuesto de bici personalizada + email al dueño
+- Productos (publico, sin registro) + carrito + compra simple (sin pasarela de pago)
+- Servicios: agenda de turnos + emails (negocio y cliente)
+- Personalizado: presupuesto de bici personalizada + email al negocio
 - Login/registro de clientes + rol admin
-- Asistente de preguntas frecuentes (simple, sin IA)
-
-> Nota: Este proyecto está pensado para que lo abras en tu PC y hagas `bundle install` allí.
-> En este entorno no puedo descargar gems desde internet, por eso te dejo el proyecto completo pero **sin** `Gemfile.lock`.
+- FAQ simple
 
 ## Requisitos (en tu PC)
 - Ruby 3.1+ (ideal 3.2+)
 - Bundler
-- Node no es obligatorio (usa Bootstrap por CDN)
 
-## Setup rápido
+## Setup rapido
 ```bash
 bundle install
 bin/rails db:create db:migrate db:seed
 bin/rails s
 ```
 
-Entrá a: http://localhost:3000
+Entrar a: `http://localhost:3000`
 
 ### Usuario admin (seed)
-- Email: admin@megabike.com
-- Password: admin1234
+- Email: `admin@megabike.com`
+- Password: `admin1234`
 
-## Email
-En desarrollo el mailer está configurado con `letter_opener_web`.
-Cuando creás un turno o un pedido de personalizado, se genera un email y lo podés ver en:
-http://localhost:3000/letter_opener
+## Email en desarrollo
+En desarrollo el mailer esta configurado con `letter_opener_web`.
+Ver emails en: `http://localhost:3000/letter_opener`
 
-En producción (Render/Koyeb) cambiás la config SMTP en variables de entorno.
+## Produccion (Render): variables de entorno (SMTP)
+Importante: Render no trae un SMTP gratis. Para enviar emails en produccion necesitas configurar un SMTP (por ejemplo Gmail).
 
-## Deploy
-Incluye `render.yaml` como ejemplo para Render.
+Variables minimas:
+- `ADMIN_EMAILS` (a donde le llega al negocio, uno o varios separados por coma)
+- `DEFAULT_FROM_EMAIL` (remitente)
+- `APP_HOST` (ej: `megabike.onrender.com`)
+- `APP_PROTOCOL` = `https`
+
+SMTP (Gmail):
+- `SMTP_ADDRESS` = `smtp.gmail.com`
+- `SMTP_PORT` = `587`
+- `SMTP_USERNAME` = tu gmail completo (ej: `ayleeenmaliandi@gmail.com`)
+- `SMTP_PASSWORD` = App Password de Google (no es tu clave normal)
+- `SMTP_AUTHENTICATION` = `plain`
+- `SMTP_ENABLE_STARTTLS_AUTO` = `true`
+
+Nota: para obtener `SMTP_PASSWORD` en Gmail, Google pide tener activada la verificacion en 2 pasos y luego crear una "contrasena de aplicacion".
