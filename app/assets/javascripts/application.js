@@ -1,0 +1,2 @@
+//= require support_widget
+

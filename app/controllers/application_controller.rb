@@ -47,7 +47,9 @@ class ApplicationController < ActionController::Base
     url = ENV["WHATSAPP_SUPPORT_URL"].to_s.strip
     return url unless url == ""
 
+    # Default support phone (requested): +54 9 341 213 0596
     phone = ENV["WHATSAPP_SUPPORT_PHONE"].to_s.strip
+    phone = "+5493412130596" if phone == ""
     return nil if phone == ""
 
     digits = phone.gsub(/[^\d]/, "")
@@ -62,4 +64,3 @@ class ApplicationController < ActionController::Base
     nil
   end
 end
-
