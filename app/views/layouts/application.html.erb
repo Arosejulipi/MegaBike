@@ -6,13 +6,17 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <%= stylesheet_link_tag "application", media: "all" %>
   </head>
 
-  <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+  <body class="mbk-body">
+    <nav class="navbar navbar-expand-lg navbar-dark mbk-nav">
       <div class="container">
         <a class="navbar-brand fw-bold" href="/">Mega Bike</a>
 
@@ -24,7 +28,7 @@
           <ul class="navbar-nav me-auto">
             <li class="nav-item"><a class="nav-link" href="/nosotros">Nosotros</a></li>
             <li class="nav-item"><a class="nav-link" href="/products">Productos</a></li>
-            <li class="nav-item"><a class="nav-link" href="/appointments/new">Servicios (turnos)</a></li>
+            <li class="nav-item"><a class="nav-link" href="/appointments/new">Servicios</a></li>
             <li class="nav-item"><a class="nav-link" href="/custom_quotes/new">Personalizado</a></li>
             <li class="nav-item"><a class="nav-link" href="/faq">FAQ</a></li>
           </ul>
@@ -66,12 +70,105 @@
       <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
         <div>
           <div class="fw-bold">Mega Bike</div>
-          <div class="text-muted">Bicicletería · Ventas · Service</div>
+          <div class="text-muted">Bicicleteria · Ventas · Service</div>
         </div>
         <div class="text-muted">© <%= Time.current.year %> Mega Bike</div>
       </div>
     </footer>
 
+    <% if support_whatsapp_url.present? %>
+      <div class="mbk-support" data-whatsapp-url="<%= support_whatsapp_url %>">
+        <button class="mbk-support__fab" id="mbkSupportFab" type="button" aria-label="Abrir soporte">
+          <i class="fa-solid fa-comments"></i>
+        </button>
+
+        <div class="mbk-support__panel shadow-soft" id="mbkSupportPanel" hidden>
+          <div class="mbk-support__head">
+            <div>
+              <div class="mbk-support__title">Soporte</div>
+              <div class="mbk-support__sub">Respuestas rapidas + WhatsApp</div>
+            </div>
+            <button class="mbk-support__close" id="mbkSupportClose" type="button" aria-label="Cerrar">×</button>
+          </div>
+
+          <div class="mbk-support__chat" id="mbkSupportChat"></div>
+
+          <div class="mbk-support__composer">
+            <input id="mbkSupportMsg" class="form-control" placeholder="Escribi tu pregunta..." />
+            <button id="mbkSupportSend" class="btn btn-dark" type="button">Enviar</button>
+          </div>
+
+          <div class="mbk-support__hint">Si no encontramos respuesta, te llevamos directo a WhatsApp.</div>
+        </div>
+      </div>
+    <% end %>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      (function () {
+        const root = document.querySelector('.mbk-support');
+        if (!root) return;
+
+        const whatsappUrl = root.dataset.whatsappUrl || '';
+        const fab = document.getElementById('mbkSupportFab');
+        const panel = document.getElementById('mbkSupportPanel');
+        const closeBtn = document.getElementById('mbkSupportClose');
+        const chat = document.getElementById('mbkSupportChat');
+        const msg = document.getElementById('mbkSupportMsg');
+        const send = document.getElementById('mbkSupportSend');
+
+        function addLine(who, text) {
+          const div = document.createElement('div');
+          div.className = 'mbk-support__line';
+          div.innerHTML = `<span class="mbk-support__who">${who}:</span> <span>${text}</span>`;
+          chat.appendChild(div);
+          chat.scrollTop = chat.scrollHeight;
+        }
+
+        function answer(q) {
+          const t = (q || '').toLowerCase();
+          if (t.includes('turno') || t.includes('service') || t.includes('servicio')) {
+            return 'Podes agendar desde “Servicios”. Completa el formulario y te llega confirmacion por mail.';
+          }
+          if (t.includes('envio') || t.includes('envíos') || t.includes('envios')) {
+            return 'Si, hacemos envios. Te confirmamos costo y tiempos al comprar o por WhatsApp.';
+          }
+          if (t.includes('pago') || t.includes('tarjeta') || t.includes('transfer')) {
+            return 'Aceptamos efectivo, transferencia y tarjetas (segun disponibilidad).';
+          }
+          if (t.includes('personal') || t.includes('personalizada') || t.includes('presupuesto')) {
+            return 'Entra a “Personalizado”, completa el formulario y nos llega tu pedido por mail.';
+          }
+          return `No encontre una respuesta rapida. <a href="${whatsappUrl}" target="_blank" rel="noopener">Hablemos por WhatsApp</a>.`;
+        }
+
+        function open() { panel.hidden = false; panel.classList.add('is-open'); msg && msg.focus(); }
+        function close() { panel.hidden = true; panel.classList.remove('is-open'); }
+
+        fab && fab.addEventListener('click', () => panel.hidden ? open() : close());
+        closeBtn && closeBtn.addEventListener('click', close);
+
+        let greeted = false;
+        function ensureGreeted() {
+          if (greeted) return;
+          greeted = true;
+          addLine('Soporte', 'Hola! En que te ayudo?');
+        }
+
+        function onSend() {
+          ensureGreeted();
+          const q = (msg.value || '').trim();
+          if (!q) return;
+          addLine('Vos', q);
+          msg.value = '';
+          setTimeout(() => addLine('Soporte', answer(q)), 120);
+        }
+
+        send && send.addEventListener('click', onSend);
+        msg && msg.addEventListener('keydown', (e) => { if (e.key === 'Enter') onSend(); });
+      })();
+    </script>
   </body>
 </html>
+

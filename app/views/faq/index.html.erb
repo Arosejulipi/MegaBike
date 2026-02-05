@@ -1,4 +1,6 @@
-<h1 class="h3 fw-bold mb-3">Asistente (FAQ)</h1>
+<% wa = support_whatsapp_url %>
+
+<h1 class="h3 fw-bold mb-3">Soporte</h1>
 
 <div class="row g-3">
   <div class="col-md-7">
@@ -6,11 +8,19 @@
       <div class="card-body p-4">
         <h2 class="h5 fw-bold">Preguntas frecuentes</h2>
         <ul class="text-muted">
-          <li>¿Cómo agendo un turno de service?</li>
-          <li>¿Hacen envíos?</li>
-          <li>¿Cómo pido una bici personalizada?</li>
-          <li>¿Qué medios de pago aceptan?</li>
+          <li>Como agendo un turno de service?</li>
+          <li>Hacen envios?</li>
+          <li>Como pido una bici personalizada?</li>
+          <li>Que medios de pago aceptan?</li>
         </ul>
+
+        <% if wa.present? %>
+          <div class="mt-3">
+            <a class="btn btn-outline-dark" href="<%= wa %>" target="_blank" rel="noopener">
+              <i class="fa-brands fa-whatsapp"></i> Hablar por WhatsApp
+            </a>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>
@@ -18,13 +28,13 @@
   <div class="col-md-5">
     <div class="card shadow-soft">
       <div class="card-body p-4">
-        <div class="fw-bold mb-2">Chat rápido</div>
+        <div class="fw-bold mb-2">Chat rapido</div>
         <div id="chat" class="border rounded-4 p-3 bg-white" style="height: 320px; overflow:auto;"></div>
         <div class="d-flex gap-2 mt-3">
-          <input id="msg" class="form-control" placeholder="Escribí tu pregunta..." />
-          <button id="send" class="btn btn-dark">Enviar</button>
+          <input id="msg" class="form-control" placeholder="Escribi tu pregunta..." />
+          <button id="send" class="btn btn-dark" type="button">Enviar</button>
         </div>
-        <div class="text-muted small mt-2">Tip: probá escribir “turno”, “envíos”, “pago” o “personalizada”.</div>
+        <div class="text-muted small mt-2">Tip: proba escribir "turno", "envios", "pago" o "personalizada".</div>
       </div>
     </div>
   </div>
@@ -34,6 +44,7 @@
   const chat = document.getElementById('chat');
   const msg = document.getElementById('msg');
   const send = document.getElementById('send');
+  const whatsappUrl = <%= wa.present? ? wa.to_json : '""' %>;
 
   function addLine(who, text) {
     const div = document.createElement('div');
@@ -44,32 +55,36 @@
   }
 
   function botAnswer(q) {
-    const t = q.toLowerCase();
+    const t = (q || '').toLowerCase();
     if (t.includes('turno') || t.includes('service') || t.includes('servicio')) {
-      return 'Podés agendar desde “Servicios (turnos)”. Completás el formulario y nos llega tu pedido por mail.';
+      return 'Podes agendar desde "Servicios". Completa el formulario y te llega confirmacion por mail.';
     }
-    if (t.includes('envio') || t.includes('envíos') || t.includes('envios')) {
-      return 'Sí, hacemos envíos. Te confirmamos costo y tiempos cuando realizás la compra o nos escribís.';
+    if (t.includes('envio') || t.includes('envios') || t.includes('envíos')) {
+      return 'Si, hacemos envios. Te confirmamos costo y tiempos al comprar o por WhatsApp.';
     }
     if (t.includes('pago') || t.includes('tarjeta') || t.includes('transfer')) {
-      return 'Aceptamos efectivo, transferencia y tarjetas (según disponibilidad). Te lo confirmamos al contactarte.';
+      return 'Aceptamos efectivo, transferencia y tarjetas (segun disponibilidad).';
     }
     if (t.includes('personal') || t.includes('personalizada') || t.includes('presupuesto')) {
-      return 'Entrá a “Personalizado”, elegí tus preferencias y enviá el pedido. Nos llega por mail con todos los detalles.';
+      return 'Entra a "Personalizado", completa el formulario y nos llega tu pedido por mail.';
     }
-    return 'No estoy segura 😅 Probá con: “turno”, “envíos”, “pago” o “personalizada”.';
+    if (whatsappUrl) {
+      return `No encontre una respuesta rapida. <a href="${whatsappUrl}" target="_blank" rel="noopener">Hablemos por WhatsApp</a>.`;
+    }
+    return 'No encontre una respuesta rapida. Escribinos por WhatsApp.';
   }
 
-  addLine('Asistente', 'Hola 👋 ¿En qué te ayudo?');
+  addLine('Soporte', 'Hola! En que te ayudo?');
 
   function onSend() {
     const q = msg.value.trim();
     if (!q) return;
     addLine('Vos', q);
     msg.value = '';
-    setTimeout(() => addLine('Asistente', botAnswer(q)), 150);
+    setTimeout(() => addLine('Soporte', botAnswer(q)), 150);
   }
 
   send.addEventListener('click', onSend);
   msg.addEventListener('keydown', (e) => { if (e.key === 'Enter') onSend(); });
 </script>
+
