@@ -18,6 +18,7 @@ gem "sprockets-rails"
 
 # Use Postmark for transactional emails in production (HTTP API, reliable deliverability)
 gem "postmark-rails"
+gem "sendgrid-ruby"
 
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
