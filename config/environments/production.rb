@@ -30,7 +30,8 @@ Rails.application.configure do
   else
     # Avoid timeouts if no provider is configured.
     config.action_mailer.perform_deliveries = false
-    Rails.logger.warn "ActionMailer: SMTP_ADDRESS not set. Emails are disabled in production."
+    # Rails.logger may not be initialized yet during build tasks (e.g. db:prepare).
+    warn "ActionMailer: SMTP_ADDRESS not set. Emails are disabled in production."
   end
 
   # For absolute links in emails
