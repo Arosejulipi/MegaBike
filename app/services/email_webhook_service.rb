@@ -17,6 +17,12 @@ class EmailWebhookService
     def send_email(to:, subject:, html_body:, text_body: nil, from: nil)
       return false unless configured?
 
+      result = request_email(to: to, subject: subject, html_body: html_body, text_body: text_body, from: from)
+      result[:success]
+    end
+
+    # Returns a hash: { success: true/false, code: Integer, body: String }
+    def request_email(to:, subject:, html_body:, text_body: nil, from: nil)
       uri = URI(ENV.fetch("EMAIL_WEBHOOK_URL"))
       request = Net::HTTP::Post.new(uri)
       request["Content-Type"] = "application/json"
@@ -42,12 +48,14 @@ class EmailWebhookService
         read_timeout: (ENV["EMAIL_WEBHOOK_READ_TIMEOUT"].to_s.empty? ? 20 : ENV["EMAIL_WEBHOOK_READ_TIMEOUT"].to_i)
       ) { |http| http.request(request) }
 
-      success = response.code.to_i.between?(200, 299)
-      Rails.logger.error("EmailWebhookService error #{response.code}: #{response.body}") unless success
-      success
+      code = response.code.to_i
+      body = response.body.to_s
+      success = code.between?(200, 299)
+      Rails.logger.error("EmailWebhookService error #{code}: #{body}") unless success
+      { success: success, code: code, body: body }
     rescue StandardError => e
       Rails.logger.error("EmailWebhookService exception #{e.class}: #{e.message}")
-      false
+      { success: false, code: 0, body: "#{e.class}: #{e.message}" }
     end
   end
 end

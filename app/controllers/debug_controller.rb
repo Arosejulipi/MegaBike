@@ -59,7 +59,9 @@ class DebugController < ApplicationController
       smtp_username_set: ENV["SMTP_USERNAME"].present?,
       smtp_password_set: ENV["SMTP_PASSWORD"].present?,
       admin_emails_set: ENV["ADMIN_EMAILS"].present?,
+      admin_emails: ENV["ADMIN_EMAILS"],
       default_from_email_set: ENV["DEFAULT_FROM_EMAIL"].present?,
+      default_from_email: ENV["DEFAULT_FROM_EMAIL"],
       email_webhook_set: ENV["EMAIL_WEBHOOK_URL"].present?
     }
 
@@ -105,5 +107,21 @@ class DebugController < ApplicationController
     end
 
     render plain: "Error sending test emails: #{e.class}: #{e.message}", status: :internal_server_error
+  end
+
+  # Debug helper to see webhook HTTP response. Only when EXPOSE_ERRORS_PUBLIC=1
+  def test_email_webhook
+    return head :forbidden unless ENV['EXPOSE_ERRORS_PUBLIC'] == '1'
+    return render json: { configured: false }, status: :unprocessable_entity unless EmailWebhookService.configured?
+
+    recipient = params[:email].presence || ENV['SMTP_TEST_RECIPIENT'] || 'admin@megabike.com'
+    result = EmailWebhookService.request_email(
+      to: recipient,
+      subject: "MegaBike webhook test",
+      html_body: "<p>Webhook OK</p>",
+      text_body: "Webhook OK"
+    )
+
+    render json: result.merge(to: recipient), status: (result[:success] ? :ok : :bad_gateway)
   end
 end

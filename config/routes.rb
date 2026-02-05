@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     get "/__debug_status", to: "debug#status"
     get "/__diagnose", to: "debug#diagnose"
     get "/__send_test_email", to: "debug#send_test_email"
+    get "/__test_email_webhook", to: "debug#test_email_webhook"
   end
 
   get "/nosotros", to: "pages#about"
