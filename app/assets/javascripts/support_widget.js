@@ -14,7 +14,6 @@
   const send = document.getElementById("mbkSupportSend");
 
   let greeted = false;
-  let aiStatus = "idle"; // idle | loading | ready | failed
   let aiEngine = null;
 
   function escapeHtml(s) {
@@ -61,9 +60,6 @@
     if (greeted) return;
     greeted = true;
     addLine("Soporte", "Hola! En que te ayudo?");
-    if (aiEnabled) {
-      addLine("Soporte", '<span class="text-muted">IA (beta) lista para ayudarte. Si no puede, te mandamos a WhatsApp.</span>');
-    }
   }
 
   function open() {
@@ -71,8 +67,6 @@
     panel.classList.add("is-open");
     msg && msg.focus();
     ensureGreeted();
-    // Start loading AI in background once the user opens the widget
-    if (aiEnabled) void initAI();
   }
 
   function close() {
@@ -85,12 +79,7 @@
 
   async function initAI() {
     if (!aiEnabled) return null;
-    if (aiStatus === "ready") return aiEngine;
-    if (aiStatus === "loading") return null;
-    if (aiStatus === "failed") return null;
-
-    aiStatus = "loading";
-    addLine("Soporte", '<span class="text-muted">Cargando IA... (puede tardar un poco)</span>');
+    if (aiEngine) return aiEngine;
 
     try {
       // WebLLM: runs in the client's browser (no API keys). If it fails, we fallback.
@@ -102,19 +91,10 @@
         "Llama-3.2-1B-Instruct-q4f16_1-MLC";
 
       aiEngine = await webllm.CreateMLCEngine(model, {
-        initProgressCallback: (p) => {
-          // Keep it quiet; users can keep chatting with quick answers.
-          if (p && p.text && p.progress === 1) {
-            addLine("Soporte", '<span class="text-muted">IA lista.</span>');
-          }
-        },
+        initProgressCallback: () => {},
       });
-
-      aiStatus = "ready";
       return aiEngine;
     } catch (e) {
-      aiStatus = "failed";
-      addLine("Soporte", '<span class="text-muted">No pude cargar IA en este dispositivo. Uso respuestas rapidas + WhatsApp.</span>');
       return null;
     }
   }
@@ -169,11 +149,9 @@
       return;
     }
 
-    // 2) AI attempt (optional)
+    // 2) Optional "smart" attempt (runs in the user's browser)
     if (aiEnabled) {
-      addLine("Soporte", '<span class="text-muted">Estoy pensando...</span>');
       const ans = await aiAnswer(q);
-      // remove the last "thinking" line? keep it simple for now.
       if (ans && !shouldEscalateFromText(ans)) {
         addLine("Soporte", escapeHtml(ans));
         return;
@@ -189,4 +167,3 @@
     if (e.key === "Enter") onSend();
   });
 })();
-

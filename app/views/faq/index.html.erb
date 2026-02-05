@@ -1,90 +1,93 @@
 <% wa = support_whatsapp_url %>
 
-<h1 class="h3 fw-bold mb-3">Soporte</h1>
-
-<div class="row g-3">
-  <div class="col-md-7">
-    <div class="card shadow-soft">
-      <div class="card-body p-4">
-        <h2 class="h5 fw-bold">Preguntas frecuentes</h2>
-        <ul class="text-muted">
-          <li>Como agendo un turno de service?</li>
-          <li>Hacen envios?</li>
-          <li>Como pido una bici personalizada?</li>
-          <li>Que medios de pago aceptan?</li>
-        </ul>
-
-        <% if wa.present? %>
-          <div class="mt-3">
-            <a class="btn btn-outline-dark" href="<%= wa %>" target="_blank" rel="noopener">
-              <i class="fa-brands fa-whatsapp"></i> Hablar por WhatsApp
-            </a>
-          </div>
-        <% end %>
-      </div>
-    </div>
+<div class="d-flex align-items-end justify-content-between gap-3 mb-3">
+  <div>
+    <h1 class="h3 fw-bold mb-1">FAQ</h1>
+    <div class="text-muted">Respuestas rapidas. Si necesitas algo mas, escribinos por WhatsApp.</div>
   </div>
-
-  <div class="col-md-5">
-    <div class="card shadow-soft">
-      <div class="card-body p-4">
-        <div class="fw-bold mb-2">Chat rapido</div>
-        <div id="chat" class="border rounded-4 p-3 bg-white" style="height: 320px; overflow:auto;"></div>
-        <div class="d-flex gap-2 mt-3">
-          <input id="msg" class="form-control" placeholder="Escribi tu pregunta..." />
-          <button id="send" class="btn btn-dark" type="button">Enviar</button>
-        </div>
-        <div class="text-muted small mt-2">Tip: proba escribir "turno", "envios", "pago" o "personalizada".</div>
-      </div>
-    </div>
-  </div>
+  <% if wa.present? %>
+    <a class="btn btn-warning" href="<%= wa %>" target="_blank" rel="noopener">
+      <i class="fa-brands fa-whatsapp"></i> WhatsApp
+    </a>
+  <% end %>
 </div>
 
-<script>
-  const chat = document.getElementById('chat');
-  const msg = document.getElementById('msg');
-  const send = document.getElementById('send');
-  const whatsappUrl = <%= wa.present? ? wa.to_json : '""' %>;
+<div class="card shadow-soft">
+  <div class="card-body p-4 p-md-5">
+    <div class="accordion" id="faqAccordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="h1">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#c1" aria-expanded="true" aria-controls="c1">
+            Como agendo un turno?
+          </button>
+        </h2>
+        <div id="c1" class="accordion-collapse collapse show" aria-labelledby="h1" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            Entra a <strong>Servicios</strong>, completa el formulario y te llega la confirmacion por mail.
+          </div>
+        </div>
+      </div>
 
-  function addLine(who, text) {
-    const div = document.createElement('div');
-    div.className = 'mb-2';
-    div.innerHTML = `<span class="fw-bold">${who}:</span> ${text}`;
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-  }
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="h2">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c2" aria-expanded="false" aria-controls="c2">
+            Que horarios de turnos manejan?
+          </button>
+        </h2>
+        <div id="c2" class="accordion-collapse collapse" aria-labelledby="h2" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            Horarios disponibles: <strong>08:30 a 13:30</strong> y <strong>16:00 a 19:00</strong>.
+          </div>
+        </div>
+      </div>
 
-  function botAnswer(q) {
-    const t = (q || '').toLowerCase();
-    if (t.includes('turno') || t.includes('service') || t.includes('servicio')) {
-      return 'Podes agendar desde "Servicios". Completa el formulario y te llega confirmacion por mail.';
-    }
-    if (t.includes('envio') || t.includes('envios') || t.includes('envíos')) {
-      return 'Si, hacemos envios. Te confirmamos costo y tiempos al comprar o por WhatsApp.';
-    }
-    if (t.includes('pago') || t.includes('tarjeta') || t.includes('transfer')) {
-      return 'Aceptamos efectivo, transferencia y tarjetas (segun disponibilidad).';
-    }
-    if (t.includes('personal') || t.includes('personalizada') || t.includes('presupuesto')) {
-      return 'Entra a "Personalizado", completa el formulario y nos llega tu pedido por mail.';
-    }
-    if (whatsappUrl) {
-      return `No encontre una respuesta rapida. <a href="${whatsappUrl}" target="_blank" rel="noopener">Hablemos por WhatsApp</a>.`;
-    }
-    return 'No encontre una respuesta rapida. Escribinos por WhatsApp.';
-  }
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="h3">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c3" aria-expanded="false" aria-controls="c3">
+            Hacen envios?
+          </button>
+        </h2>
+        <div id="c3" class="accordion-collapse collapse" aria-labelledby="h3" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            Si. Te confirmamos costo y tiempos al finalizar la compra o por WhatsApp.
+          </div>
+        </div>
+      </div>
 
-  addLine('Soporte', 'Hola! En que te ayudo?');
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="h4">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c4" aria-expanded="false" aria-controls="c4">
+            Como pido una bici personalizada?
+          </button>
+        </h2>
+        <div id="c4" class="accordion-collapse collapse" aria-labelledby="h4" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            Entra a <strong>Personalizado</strong>, elegi tus preferencias y envia el pedido. Nos llega por mail con los detalles.
+          </div>
+        </div>
+      </div>
 
-  function onSend() {
-    const q = msg.value.trim();
-    if (!q) return;
-    addLine('Vos', q);
-    msg.value = '';
-    setTimeout(() => addLine('Soporte', botAnswer(q)), 150);
-  }
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="h5">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c5" aria-expanded="false" aria-controls="c5">
+            Que medios de pago aceptan?
+          </button>
+        </h2>
+        <div id="c5" class="accordion-collapse collapse" aria-labelledby="h5" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            Aceptamos efectivo, transferencia y tarjetas (segun disponibilidad).
+          </div>
+        </div>
+      </div>
+    </div>
 
-  send.addEventListener('click', onSend);
-  msg.addEventListener('keydown', (e) => { if (e.key === 'Enter') onSend(); });
-</script>
+    <% if wa.present? %>
+      <div class="mt-4 d-flex flex-wrap gap-2">
+        <a class="btn btn-outline-dark" href="<%= wa %>" target="_blank" rel="noopener">
+          Tengo otra duda: WhatsApp
+        </a>
+      </div>
+    <% end %>
+  </div>
+</div>
 

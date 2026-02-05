@@ -77,7 +77,7 @@
       </div>
     </footer>
 
-    <% if support_whatsapp_url.present? %>
+    <% if support_whatsapp_url.present? && controller_name != "faq" %>
       <div
         class="mbk-support"
         data-whatsapp-url="<%= support_whatsapp_url %>"
