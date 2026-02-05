@@ -23,7 +23,8 @@ class EmailWebhookService
       result[:success]
     end
 
-    # Returns a hash: { success: true/false, code: Integer, body: String }
+    # Returns a hash:
+    # { success: true/false, code: Integer, body: String, final_url: String, chain: [{url, code, location}] }
     def request_email(to:, subject:, html_body:, text_body: nil, from: nil)
       payload = {
         to: Array(to).join(","),
@@ -37,16 +38,23 @@ class EmailWebhookService
       token = nil if token.empty?
 
       uri = URI(ENV.fetch("EMAIL_WEBHOOK_URL"))
-      response = post_json_with_redirects(uri, payload, token: token)
+      result = post_json_with_redirects(uri, payload, token: token)
+      response = result[:response]
 
       code = response.code.to_i
       body = response.body.to_s
       success = code.between?(200, 299)
       Rails.logger.error("EmailWebhookService error #{code}: #{body}") unless success
-      { success: success, code: code, body: body }
+      {
+        success: success,
+        code: code,
+        body: body,
+        final_url: result[:final_url].to_s,
+        chain: result[:chain]
+      }
     rescue StandardError => e
       Rails.logger.error("EmailWebhookService exception #{e.class}: #{e.message}")
-      { success: false, code: 0, body: "#{e.class}: #{e.message}" }
+      { success: false, code: 0, body: "#{e.class}: #{e.message}", final_url: "", chain: [] }
     end
 
     private
@@ -54,6 +62,7 @@ class EmailWebhookService
     def post_json_with_redirects(uri, payload, token:)
       redirects = 0
       current_uri = uri
+      chain = []
 
       loop do
         raise "EMAIL_WEBHOOK_URL must be https" unless current_uri.scheme == "https"
@@ -71,15 +80,24 @@ class EmailWebhookService
           read_timeout: (ENV["EMAIL_WEBHOOK_READ_TIMEOUT"].to_s.empty? ? 20 : ENV["EMAIL_WEBHOOK_READ_TIMEOUT"].to_i)
         ) { |http| http.request(request) }
 
-        return response unless response.is_a?(Net::HTTPRedirection)
-
         location = response["location"].to_s
-        return response if location.empty?
+        chain << { url: current_uri.to_s, code: response.code.to_i, location: location }
+
+        unless response.is_a?(Net::HTTPRedirection)
+          return { response: response, final_url: current_uri.to_s, chain: chain }
+        end
+
+        return { response: response, final_url: current_uri.to_s, chain: chain } if location.empty?
 
         redirects += 1
-        return response if redirects > MAX_REDIRECTS
+        return { response: response, final_url: current_uri.to_s, chain: chain } if redirects > MAX_REDIRECTS
 
-        current_uri = URI.join(current_uri, location)
+        current_uri =
+          if location.start_with?("http://", "https://")
+            URI(location)
+          else
+            URI.join(current_uri, location)
+          end
       end
     end
   end

@@ -62,7 +62,8 @@ class DebugController < ApplicationController
       admin_emails: ENV["ADMIN_EMAILS"],
       default_from_email_set: ENV["DEFAULT_FROM_EMAIL"].present?,
       default_from_email: ENV["DEFAULT_FROM_EMAIL"],
-      email_webhook_set: ENV["EMAIL_WEBHOOK_URL"].present?
+      email_webhook_set: ENV["EMAIL_WEBHOOK_URL"].present?,
+      email_webhook_url: ENV["EMAIL_WEBHOOK_URL"]
     }
 
     # Show mailer config summary (no secrets)
@@ -88,14 +89,11 @@ class DebugController < ApplicationController
       preferred_time: '10:00'
     )
 
-    if EmailWebhookService.configured?
-      AppointmentNotifier.notify(appt)
-    else
-      OwnerMailer.appointment_request(appt).deliver_now
-      OwnerMailer.appointment_confirmation(appt).deliver_now
-    end
+    owner_ok = MailerDeliveryService.deliver(OwnerMailer.appointment_request(appt))
+    client_ok = MailerDeliveryService.deliver(OwnerMailer.appointment_confirmation(appt))
 
-    render plain: "Test emails sent to #{recipient}", status: :ok
+    status = (owner_ok && client_ok) ? :ok : :bad_gateway
+    render plain: "Test email results => owner_ok=#{owner_ok} client_ok=#{client_ok} recipient=#{recipient}", status: status
   rescue => e
     if ENV['EXPOSE_ERRORS_PUBLIC'] == '1'
       begin
