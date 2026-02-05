@@ -10,7 +10,8 @@ require "json"
 class EmailWebhookService
   class << self
     def configured?
-      ENV["EMAIL_WEBHOOK_URL"].present?
+      url = ENV["EMAIL_WEBHOOK_URL"].to_s
+      !url.empty?
     end
 
     def send_email(to:, subject:, html_body:, text_body: nil, from: nil)
@@ -20,7 +21,8 @@ class EmailWebhookService
       request = Net::HTTP::Post.new(uri)
       request["Content-Type"] = "application/json"
 
-      token = ENV["EMAIL_WEBHOOK_TOKEN"].presence
+      token = ENV["EMAIL_WEBHOOK_TOKEN"].to_s
+      token = nil if token.empty?
       request["Authorization"] = "Bearer #{token}" if token
 
       payload = {
@@ -36,8 +38,8 @@ class EmailWebhookService
         uri.hostname,
         uri.port,
         use_ssl: uri.scheme == "https",
-        open_timeout: (ENV["EMAIL_WEBHOOK_OPEN_TIMEOUT"].presence || 5).to_i,
-        read_timeout: (ENV["EMAIL_WEBHOOK_READ_TIMEOUT"].presence || 20).to_i
+        open_timeout: (ENV["EMAIL_WEBHOOK_OPEN_TIMEOUT"].to_s.empty? ? 5 : ENV["EMAIL_WEBHOOK_OPEN_TIMEOUT"].to_i),
+        read_timeout: (ENV["EMAIL_WEBHOOK_READ_TIMEOUT"].to_s.empty? ? 20 : ENV["EMAIL_WEBHOOK_READ_TIMEOUT"].to_i)
       ) { |http| http.request(request) }
 
       success = response.code.to_i.between?(200, 299)
@@ -49,4 +51,3 @@ class EmailWebhookService
     end
   end
 end
-

@@ -65,7 +65,8 @@ class AppointmentNotifier
   def send_via_webhook(message_delivery)
     msg = message_delivery.message
     html = msg.body.to_s
-    text = ActionController::Base.helpers.strip_tags(html.to_s)
+    # Avoid ActionController dependency during build/boot tasks (e.g. assets:precompile).
+    text = html.to_s.gsub(/<[^>]*>/, " ").gsub(/\s+/, " ").strip
     EmailWebhookService.send_email(
       to: msg.to,
       subject: msg.subject,
