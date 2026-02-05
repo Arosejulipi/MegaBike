@@ -1,2 +1,20 @@
 es:
   mega_bike: "Mega Bike"
+
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      taken: "ya está en uso"
+      blank: "no puede estar en blanco"
+      invalid: "no es válido"
+      too_short: "es demasiado corto (mínimo %{count} caracteres)"
+      confirmation: "no coincide"
+
+  activerecord:
+    errors:
+      messages:
+        taken: "ya está en uso"
+        blank: "no puede estar en blanco"
+        invalid: "no es válido"
+        too_short: "es demasiado corto (mínimo %{count} caracteres)"
+        confirmation: "no coincide"
