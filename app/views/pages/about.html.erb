@@ -31,6 +31,11 @@
           role="img"
           aria-label="MegaBike"
         ></div>
+        <% unless ENV['ABOUT_IMAGE_URL'].present? || File.exist?(Rails.root.join('public', 'megabike_taller.jpg')) %>
+          <div class="alert alert-warning mt-3 mb-0">
+            Falta subir la foto. Guardala como <code>public/megabike_taller.jpg</code> y subi el cambio a GitHub para que Render la muestre.
+          </div>
+        <% end %>
         <% if Rails.env.development? %>
           <div class="text-muted small mt-2">
             Tip: guarda una foto como <code>public/megabike_taller.jpg</code> (o configura <code>ABOUT_IMAGE_URL</code>).
@@ -83,6 +88,36 @@
         </div>
       </div>
     </div>
+
+    <hr class="my-4" />
+
+    <div class="row g-4 align-items-start">
+      <div class="col-12 col-lg-6">
+        <h2 class="h5 fw-bold mb-2">Donde estamos</h2>
+        <div class="text-muted mb-3">Lavalle 1602</div>
+        <iframe
+          class="w-100 rounded-4 border shadow-soft"
+          height="280"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          src="https://www.google.com/maps?q=Lavalle%201602&output=embed"
+        ></iframe>
+      </div>
+      <div class="col-12 col-lg-6">
+        <div class="p-3 p-md-4 rounded-4 bg-light h-100">
+          <div class="fw-bold mb-2">Consultas</div>
+          <div class="text-muted">
+            Si tenes dudas, escribinos y te respondemos por WhatsApp lo antes posible.
+          </div>
+          <% if support_whatsapp_url.present? %>
+            <div class="mt-3">
+              <a class="btn btn-dark" href="<%= support_whatsapp_url %>" target="_blank" rel="noopener">
+                Hablar por WhatsApp
+              </a>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-

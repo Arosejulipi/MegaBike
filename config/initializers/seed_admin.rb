@@ -19,9 +19,12 @@ begin
       email = (ENV["SEED_ADMIN_EMAIL"].presence || "admin@megabike.com").to_s.downcase.strip
       name = (ENV["SEED_ADMIN_NAME"].presence || "Admin Mega Bike").to_s
 
-      if defined?(ActiveRecord::Base) && ActiveRecord::Base.connected?
+      if defined?(ActiveRecord::Base)
+        # Force a DB connection (ActiveRecord can be lazy during boot).
+        conn = ActiveRecord::Base.connection
+
         # Avoid touching tables before migrations have run.
-        if ActiveRecord::Base.connection.data_source_exists?("users")
+        if conn.data_source_exists?("users")
           user = User.find_by("lower(email) = ?", email)
 
           if user.blank?
