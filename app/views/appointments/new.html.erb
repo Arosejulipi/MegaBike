@@ -43,7 +43,10 @@
 
         <div class="col-md-6">
           <%= f.label :preferred_time, "Horario preferido", class: "form-label" %>
-          <%= f.select :preferred_time, Appointment.allowed_time_options, { include_blank: "Elegir horario..." }, class: "form-select" %>
+          <%= f.select :preferred_time,
+                       grouped_options_for_select(Appointment.allowed_time_groups, f.object.preferred_time),
+                       { include_blank: "Elegir horario..." },
+                       class: "form-select" %>
           <div class="form-text">Horarios disponibles: 08:30-13:30 y 16:00-19:00.</div>
         </div>
 
