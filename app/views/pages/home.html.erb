@@ -1,21 +1,32 @@
-<div class="hero p-4 p-md-5 shadow-soft">
+<div
+  class="hero hero--photo p-4 p-md-5 shadow-soft"
+  style="--mbk-hero-url: url('<%= (ENV['HERO_IMAGE_URL'].presence || '/megabike_hero.jpg') %>');"
+>
   <div class="row align-items-center g-4">
     <div class="col-md-7">
-      <h1 class="display-6 fw-bold">Tu bici, tu estilo 🚴‍♀️</h1>
-      <p class="lead text-white-50 mb-4">Ventas, repuestos y service. Turnos online y presupuesto de bicicletas personalizadas.</p>
+      <h1 class="display-6 fw-bold mb-2">MegaBike</h1>
+      <p class="lead text-white-50 mb-4">
+        Bicicletas, repuestos y service. Sacá turno online o pedí presupuesto para una bici personalizada.
+      </p>
       <div class="d-flex flex-wrap gap-2">
         <a class="btn btn-warning btn-lg" href="/products">Ver productos</a>
-        <a class="btn btn-outline-light btn-lg" href="/appointments/new">Agendar turno</a>
+        <a class="btn btn-outline-light btn-lg" href="/appointments/new">Servicios</a>
         <a class="btn btn-outline-light btn-lg" href="/custom_quotes/new">Personalizado</a>
       </div>
+      <% if Rails.env.development? %>
+        <div class="text-white-50 small mt-3">
+          Tip: guardá una foto como <code>public/megabike_hero.jpg</code> (o configurá <code>HERO_IMAGE_URL</code>).
+        </div>
+      <% end %>
     </div>
+
     <div class="col-md-5">
       <div class="bg-dark bg-opacity-25 p-4 rounded-4">
         <div class="d-flex gap-3">
           <div class="text-warning fs-2"><i class="fa-solid fa-bicycle"></i></div>
           <div>
-            <div class="fw-bold">Atención rápida</div>
-            <div class="text-white-50">Te respondemos por mail con el detalle de tu pedido.</div>
+            <div class="fw-bold">Atención clara</div>
+            <div class="text-white-50">Te llega un mail con el detalle del turno o del pedido.</div>
           </div>
         </div>
         <hr class="border-light border-opacity-25" />
@@ -23,7 +34,7 @@
           <div class="text-warning fs-2"><i class="fa-solid fa-screwdriver-wrench"></i></div>
           <div>
             <div class="fw-bold">Service y mantenimiento</div>
-            <div class="text-white-50">Agenda de turnos y recepción de solicitudes.</div>
+            <div class="text-white-50">Turnos de 08:30-13:30 y 16:00-19:00.</div>
           </div>
         </div>
       </div>

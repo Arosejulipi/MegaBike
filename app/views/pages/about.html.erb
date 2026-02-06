@@ -1,28 +1,87 @@
 <div class="card shadow-soft">
   <div class="card-body p-4 p-md-5">
-    <h1 class="h3 fw-bold">Nosotros</h1>
-    <p class="text-muted">En Mega Bike amamos las bicicletas. Vendemos, reparamos y personalizamos para que salgas a rodar con confianza.</p>
+    <div class="row g-4 align-items-start">
+      <div class="col-12 col-lg-7">
+        <h1 class="h3 fw-bold mb-3">Nosotros</h1>
 
-    <div class="row g-4 mt-2">
-      <div class="col-md-4">
-        <div class="p-3 bg-light rounded-4">
-          <div class="fw-bold">Rosario</div>
-          <div class="text-muted">Atencion local y asesoramiento.</div>
+        <p class="lead text-muted">
+          Somos una bicicletería familiar formada por un padre y un hijo, unidos por la misma pasión: las bicicletas y el trabajo bien hecho.
+        </p>
+
+        <p>
+          Nuestro proyecto nació en el taller de casa, entre herramientas, ruedas y largas charlas sobre cómo mejorar cada detalle. Con el tiempo,
+          esa pasión se convirtió en un espacio donde la experiencia y la energía se complementan para brindar siempre la mejor solución a cada cliente.
+        </p>
+
+        <p>
+          Creemos que cada bicicleta cuenta una historia, y por eso trabajamos con dedicación y compromiso en cada reparación, armado o personalización.
+          Nos gusta hacer las cosas al detalle, sin apuros y con la responsabilidad que merece quien confía en nosotros.
+        </p>
+
+        <p>
+          Informamos, asesoramos y acompañamos en cada decisión, porque entendemos que elegir o mejorar una bicicleta no es solo una compra,
+          sino una inversión en bienestar y disfrute.
+        </p>
+      </div>
+
+      <div class="col-12 col-lg-5">
+        <div
+          class="mbk-photo mbk-photo--about shadow-soft"
+          style="--mbk-photo-url: url('<%= (ENV['ABOUT_IMAGE_URL'].presence || '/megabike_taller.jpg') %>');"
+          role="img"
+          aria-label="MegaBike"
+        ></div>
+        <% if Rails.env.development? %>
+          <div class="text-muted small mt-2">
+            Tip: guardá una foto como <code>public/megabike_taller.jpg</code> (o configurá <code>ABOUT_IMAGE_URL</code>).
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <h2 class="h5 fw-bold mb-3">Ofrecemos</h2>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded-4 h-100">
+              <div class="fw-bold">Venta de bicicletas</div>
+              <div class="text-muted">Bicicletas predeterminadas listas para salir a rodar.</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded-4 h-100">
+              <div class="fw-bold">Personalización</div>
+              <div class="text-muted">Adaptamos la bici a tu estilo y necesidades.</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded-4 h-100">
+              <div class="fw-bold">Servicio técnico</div>
+              <div class="text-muted">Mantenimiento y service con atención minuciosa.</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded-4 h-100">
+              <div class="fw-bold">Repuestos y accesorios</div>
+              <div class="text-muted">Primeras marcas, asesoramiento y compatibilidad.</div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="p-3 bg-light rounded-4">
-          <div class="fw-bold">Taller</div>
-          <div class="text-muted">Turnos online para servicios.</div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="p-3 bg-light rounded-4">
-          <div class="fw-bold">Personalizado</div>
-          <div class="text-muted">Armamos tu bici a medida.</div>
+
+      <div class="col-lg-6">
+        <div class="p-3 p-md-4 rounded-4 bg-light h-100">
+          <div class="fw-bold mb-2">Nuestro compromiso</div>
+          <div class="text-muted">
+            Nuestro compromiso es claro: brindar calidad, confianza y un trato cercano. Porque más que clientes, buscamos construir relaciones duraderas,
+            basadas en el respeto, la honestidad y el amor por este mundo sobre ruedas.
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-

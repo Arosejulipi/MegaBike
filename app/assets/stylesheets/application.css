@@ -17,9 +17,15 @@
 
 .mbk-body {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: linear-gradient(180deg, #f0f6ff 0%, var(--mbk-paper) 35%, #ffffff 100%);
   color: var(--mbk-ink);
   font-family: "Space Grotesk", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.mbk-main {
+  flex: 1 0 auto;
 }
 
 h1, h2, h3, .navbar-brand {
@@ -52,6 +58,33 @@ h1, h2, h3, .navbar-brand {
   box-shadow: var(--mbk-shadow);
 }
 .hero > * { position: relative; z-index: 1; }
+
+.hero.hero--photo {
+  background:
+    linear-gradient(135deg, rgba(11, 16, 32, 0.72) 0%, rgba(18, 26, 47, 0.78) 55%, rgba(12, 15, 26, 0.82) 100%),
+    var(--mbk-hero-url, linear-gradient(135deg, #0b1020 0%, #121a2f 55%, #0c0f1a 100%));
+  background-size: cover;
+  background-position: center;
+}
+
+.mbk-photo {
+  border-radius: calc(var(--mbk-radius) + 6px);
+  border: 1px solid var(--mbk-line);
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background:
+    radial-gradient(1200px 420px at 10% 0%, rgba(45, 107, 255, 0.32) 0%, rgba(0, 0, 0, 0) 60%),
+    linear-gradient(135deg, #0b1020 0%, #121a2f 55%, #0c0f1a 100%);
+  background-image:
+    linear-gradient(135deg, rgba(11, 16, 32, 0.55) 0%, rgba(18, 26, 47, 0.70) 55%, rgba(12, 15, 26, 0.80) 100%),
+    var(--mbk-photo-url);
+  background-size: cover;
+  background-position: center;
+}
+
+.mbk-footer {
+  background: rgba(255, 255, 255, 0.9);
+}
 
 .card {
   border: 1px solid var(--mbk-line);
