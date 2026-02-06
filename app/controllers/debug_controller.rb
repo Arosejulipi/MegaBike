@@ -24,6 +24,11 @@ class DebugController < ApplicationController
     return head :forbidden unless ENV['EXPOSE_ERRORS_PUBLIC'] == '1'
 
     results = {}
+    results[:version] = {
+      render_git_commit: ENV["RENDER_GIT_COMMIT"],
+      render_service_id: ENV["RENDER_SERVICE_ID"]
+    }
+
     public_dir = Rails.root.join('public')
     results[:public_dir_exists] = Dir.exist?(public_dir)
     results[:public_dir_mode] = File.stat(public_dir).mode.to_s(8) rescue nil
@@ -72,6 +77,27 @@ class DebugController < ApplicationController
       raise_delivery_errors: Rails.application.config.action_mailer.raise_delivery_errors,
       delivery_method: Rails.application.config.action_mailer.delivery_method.to_s
     }
+
+    results[:appointments] = {
+      allowed_time_options: Appointment.allowed_time_options
+    }
+
+    seed_email = (ENV["SEED_ADMIN_EMAIL"].presence || "admin@megabike.com").to_s.downcase.strip
+    results[:admin_seed] = {
+      seed_admin_email: seed_email,
+      seed_admin_password_set: ENV["SEED_ADMIN_PASSWORD"].present?,
+      seed_admin_force_reset: (ENV["SEED_ADMIN_FORCE_RESET"].to_s.strip == "1")
+    }
+
+    begin
+      admin_user = User.where("lower(email) = ?", seed_email).first
+      results[:admin_user] = {
+        exists: admin_user.present?,
+        role: admin_user&.role
+      }
+    rescue => e
+      results[:admin_user_error] = "#{e.class}: #{e.message}"
+    end
 
     render json: results
   end

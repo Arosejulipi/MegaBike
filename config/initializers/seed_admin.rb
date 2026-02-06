@@ -11,6 +11,7 @@
 # - SEED_ADMIN_EMAIL (default: admin@megabike.com)
 # - SEED_ADMIN_PASSWORD (required to enable)
 # - SEED_ADMIN_NAME (optional)
+# - SEED_ADMIN_FORCE_RESET (optional; "1" to force password + role to match env)
 begin
   if Rails.env.production?
     password = ENV["SEED_ADMIN_PASSWORD"].to_s.strip
@@ -18,6 +19,7 @@ begin
     unless password.empty?
       email = (ENV["SEED_ADMIN_EMAIL"].presence || "admin@megabike.com").to_s.downcase.strip
       name = (ENV["SEED_ADMIN_NAME"].presence || "Admin Mega Bike").to_s
+      force_reset = ENV["SEED_ADMIN_FORCE_RESET"].to_s.strip == "1"
 
       if defined?(ActiveRecord::Base)
         # Force a DB connection (ActiveRecord can be lazy during boot).
@@ -35,6 +37,22 @@ begin
               password_confirmation: password,
               role: :admin
             )
+          else
+            # Ensure the configured user is actually admin.
+            changed = false
+            if !user.admin?
+              user.role = :admin
+              changed = true
+            end
+
+            if force_reset
+              user.name = name if user.name.to_s.strip == ""
+              user.password = password
+              user.password_confirmation = password
+              changed = true
+            end
+
+            user.save! if changed
           end
         end
       end
