@@ -27,13 +27,13 @@
       <div class="col-12 col-lg-5">
         <div
           class="mbk-photo mbk-photo--about shadow-soft"
-          style="--mbk-photo-url: url('<%= (ENV['ABOUT_IMAGE_URL'].presence || '/megabike_taller.jpg') %>');"
+          style="--mbk-photo-url: url('<%= (ENV['ABOUT_IMAGE_URL'].presence || '/megabike_taller.png') %>');"
           role="img"
           aria-label="MegaBike"
         ></div>
-        <% unless ENV['ABOUT_IMAGE_URL'].present? || File.exist?(Rails.root.join('public', 'megabike_taller.jpg')) %>
+        <% unless ENV['ABOUT_IMAGE_URL'].present? || File.exist?(Rails.root.join('public', 'megabike_taller.png')) || File.exist?(Rails.root.join('public', 'megabike_taller.jpg')) %>
           <div class="alert alert-warning mt-3 mb-0">
-            Falta subir la foto. Guardala como <code>public/megabike_taller.jpg</code> y subi el cambio a GitHub para que Render la muestre.
+            Falta subir la foto. Guardala como <code>public/megabike_taller.png</code> y subi el cambio a GitHub para que Render la muestre.
           </div>
         <% end %>
         <% if Rails.env.development? %>

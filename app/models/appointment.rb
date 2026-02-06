@@ -11,14 +11,6 @@ class Appointment < ApplicationRecord
     morning + afternoon
   end
 
-  # Used by the form to make it obvious that there are two ranges.
-  def self.allowed_time_groups
-    {
-      "Manana" => build_slots("08:30", "13:30", step_minutes: 30),
-      "Tarde" => build_slots("16:00", "19:00", step_minutes: 30)
-    }
-  end
-
   def self.build_slots(start_hhmm, end_hhmm, step_minutes:)
     start_minutes = to_minutes(start_hhmm)
     end_minutes = to_minutes(end_hhmm)
