@@ -1,8 +1,10 @@
 <h1 class="h3 fw-bold mb-3">Agendar turno de service</h1>
 
+<!-- Build: <%= ENV["RENDER_GIT_COMMIT"].to_s[0, 7] %> Times: <%= Appointment.allowed_time_options.join(",") %> -->
+
 <p class="text-muted mb-4">
-  Realizamos mantenimientos y todo tipo de service: frenos, cambios, ruedas, ajustes generales, armado y más.
-  Elegí una fecha y un horario, y te confirmamos por mail.
+  Realizamos mantenimientos y todo tipo de service: frenos, cambios, ruedas, ajustes generales, armado y mas.
+  Elegi una fecha y un horario, y te confirmamos por mail.
 </p>
 
 <div class="card shadow-soft">
@@ -81,3 +83,4 @@
     <% end %>
   </div>
 </div>
+
