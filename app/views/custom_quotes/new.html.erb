@@ -3,11 +3,11 @@
 <div class="card shadow-soft">
   <div class="card-body p-4">
     <p class="text-muted">
-      A veces una bici de fábrica no encaja perfecto: por comodidad, por el uso que le das, por estética o por rendimiento.
-      La personalización nace de esa necesidad de adaptar la bicicleta a tu cuerpo, tu rutina y tu estilo.
+      A veces una bici de fabrica no encaja perfecto: por comodidad, por el uso que le das, por estetica o por rendimiento.
+      La personalizacion nace de esa necesidad de adaptar la bicicleta a tu cuerpo, tu rutina y tu estilo.
     </p>
     <p class="text-muted mb-4">
-      Completá el formulario y te respondemos por mail con un presupuesto.
+      Completa el formulario y te respondemos por mail con un presupuesto.
     </p>
 
     <%= form_with model: @custom_quote, local: true do |f| %>
@@ -17,7 +17,7 @@
           <%= f.text_field :full_name, class: "form-control" %>
         </div>
         <div class="col-md-6">
-          <%= f.label :phone, "Teléfono", class: "form-label" %>
+          <%= f.label :phone, "Telefono", class: "form-label" %>
           <%= f.text_field :phone, class: "form-control" %>
         </div>
         <div class="col-md-6">
@@ -26,11 +26,11 @@
         </div>
         <div class="col-md-6">
           <%= f.label :bike_type, "Tipo de bici", class: "form-label" %>
-          <%= f.select :bike_type, ["Urbana", "MTB", "Ruta", "Plegable", "Eléctrica"], {}, class: "form-select" %>
+          <%= f.select :bike_type, ["Urbana", "MTB", "Ruta", "Plegable", "Electrica"], {}, class: "form-select" %>
         </div>
         <div class="col-md-4">
           <%= f.label :frame_size, "Talle de cuadro", class: "form-label" %>
-          <%= f.select :frame_size, ["S", "M", "L", "XL"], { include_blank: "No sé" }, class: "form-select" %>
+          <%= f.select :frame_size, ["S", "M", "L", "XL"], { include_blank: "No se" }, class: "form-select" %>
         </div>
         <div class="col-md-4">
           <%= f.label :color, "Color", class: "form-label" %>
@@ -38,7 +38,7 @@
         </div>
         <div class="col-md-4">
           <%= f.label :brakes, "Frenos", class: "form-label" %>
-          <%= f.select :brakes, ["V-Brake", "Disco mecánico", "Disco hidráulico"], { include_blank: "Indistinto" }, class: "form-select" %>
+          <%= f.select :brakes, ["V-Brake", "Disco mecanico", "Disco hidraulico"], { include_blank: "Indistinto" }, class: "form-select" %>
         </div>
         <div class="col-md-6">
           <%= f.label :gears, "Cambios", class: "form-label" %>
@@ -46,7 +46,7 @@
         </div>
         <div class="col-md-6">
           <%= f.label :budget_range, "Rango de presupuesto", class: "form-label" %>
-          <%= f.select :budget_range, ["Económico", "Intermedio", "Premium"], {}, class: "form-select" %>
+          <%= f.select :budget_range, ["Economico", "Intermedio", "Premium"], {}, class: "form-select" %>
         </div>
         <div class="col-12">
           <%= f.label :extra_notes, "Detalles extra (opcional)", class: "form-label" %>
@@ -60,7 +60,7 @@
 
       <% if @custom_quote.errors.any? %>
         <div class="alert alert-danger mt-3">
-          <div class="fw-bold">Revisá:</div>
+          <div class="fw-bold">Revisa:</div>
           <ul class="mb-0">
             <% @custom_quote.errors.full_messages.each do |m| %>
               <li><%= m %></li>
