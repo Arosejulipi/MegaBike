@@ -1,14 +1,14 @@
-<h1 class="h3 fw-bold mb-3">Elegir nueva contrasena</h1>
+<h1 class="h3 fw-bold mb-3">Elegir nueva contraseña</h1>
 
 <div class="card shadow-soft" style="max-width: 520px;">
   <div class="card-body p-4">
     <%= form_with url: password_reset_path(@token), method: :patch, local: true do |f| %>
       <div class="mb-3">
-        <%= label_tag "user_password", "Nueva contrasena", class: "form-label" %>
+        <%= label_tag "user_password", "Nueva contraseña", class: "form-label" %>
         <%= password_field_tag "user[password]", nil, class: "form-control", required: true %>
       </div>
       <div class="mb-3">
-        <%= label_tag "user_password_confirmation", "Confirmar contrasena", class: "form-label" %>
+        <%= label_tag "user_password_confirmation", "Confirmar contraseña", class: "form-label" %>
         <%= password_field_tag "user[password_confirmation]", nil, class: "form-control", required: true %>
       </div>
 
@@ -27,4 +27,3 @@
     <% end %>
   </div>
 </div>
-

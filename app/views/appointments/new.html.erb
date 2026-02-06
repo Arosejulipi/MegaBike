@@ -3,8 +3,8 @@
 <!-- Build: <%= ENV["RENDER_GIT_COMMIT"].to_s[0, 7] %> Times: <%= Appointment.allowed_time_options.join(",") %> -->
 
 <p class="text-muted mb-4">
-  Realizamos mantenimientos y todo tipo de service: frenos, cambios, ruedas, ajustes generales, armado y mas.
-  Elegi una fecha y un horario, y te confirmamos por mail.
+  Realizamos mantenimientos y todo tipo de service: frenos, cambios, ruedas, ajustes generales, armado y más.
+  Elegí una fecha y un horario, y te confirmamos por mail.
 </p>
 
 <div class="card shadow-soft">
@@ -46,7 +46,7 @@
         <div class="col-md-6">
           <%= f.label :preferred_time, "Horario preferido", class: "form-label" %>
           <%= f.select :preferred_time, nil, { include_blank: "Elegir horario..." }, class: "form-select" do %>
-            <optgroup label="Manana">
+            <optgroup label="Mañana">
               <% Appointment.morning_slots.each do |t| %>
                 <option value="<%= t %>" <%= "selected" if f.object.preferred_time.to_s == t %>><%= t %></option>
               <% end %>

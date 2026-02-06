@@ -43,6 +43,14 @@ class ApplicationController < ActionController::Base
     redirect_to root_path, alert: "No tenes permisos para acceder."
   end
 
+  # Admin users manage the store; they shouldn't purchase like customers.
+  def block_admin_purchases
+    return unless admin?
+
+    session[:cart] = {}
+    redirect_to root_path, alert: "Los administradores no pueden realizar compras desde el sitio."
+  end
+
   def support_whatsapp_url
     url = ENV["WHATSAPP_SUPPORT_URL"].to_s.strip
     return url unless url == ""

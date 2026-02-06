@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CartsController < ApplicationController
+  before_action :block_admin_purchases
+
   def show
     @cart = cart
     @items = cart_items

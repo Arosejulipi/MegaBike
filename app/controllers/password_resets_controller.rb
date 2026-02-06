@@ -12,7 +12,7 @@ class PasswordResetsController < ApplicationController
       MailerDeliveryService.deliver(UserMailer.password_reset(user, token))
     end
 
-    redirect_to login_path, notice: "Si el email existe, te enviamos un link para restablecer tu contrasena."
+    redirect_to login_path, notice: "Si el email existe, te enviamos un link para restablecer tu contraseña."
   end
 
   def edit
@@ -27,7 +27,7 @@ class PasswordResetsController < ApplicationController
     @user = User.find_signed!(@token, purpose: :password_reset)
 
     if @user.update(password_params)
-      redirect_to login_path, notice: "Listo! Ya podes ingresar con tu nueva contrasena."
+      redirect_to login_path, notice: "Listo! Ya podés ingresar con tu nueva contraseña."
     else
       render :edit, status: :unprocessable_entity
     end

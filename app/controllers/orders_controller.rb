@@ -2,6 +2,7 @@
 
 class OrdersController < ApplicationController
   before_action :require_login
+  before_action :block_admin_purchases
 
   def new
     @items = cart_items

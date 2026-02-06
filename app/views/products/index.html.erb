@@ -1,6 +1,8 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
   <h1 class="h3 fw-bold mb-0">Productos</h1>
-  <a class="btn btn-outline-dark" href="/cart">Ver carrito</a>
+  <% unless admin? %>
+    <a class="btn btn-outline-dark" href="/cart">Ver carrito</a>
+  <% end %>
 </div>
 
 <div class="row g-3">
@@ -12,17 +14,19 @@
           <div class="text-muted small"><%= truncate(p.description, length: 100) %></div>
           <div class="mt-2"><span class="badge text-bg-warning">$ <%= p.price.to_i %></span> <span class="text-muted small">Stock: <%= p.stock %></span></div>
         </div>
-        <div class="card-footer bg-white border-0 pb-3">
-          <div class="d-grid gap-2">
-            <a class="btn btn-dark" href="/products/<%= p.id %>">Ver detalle</a>
-            <%= form_with url: add_item_cart_path, method: :post, local: true do |f| %>
-              <%= hidden_field_tag :product_id, p.id %>
-              <%= hidden_field_tag :quantity, 1 %>
-              <%= f.submit "Agregar al carrito", class: "btn btn-outline-dark" %>
-            <% end %>
+          <div class="card-footer bg-white border-0 pb-3">
+            <div class="d-grid gap-2">
+              <a class="btn btn-dark" href="/products/<%= p.id %>">Ver detalle</a>
+              <% unless admin? %>
+                <%= form_with url: add_item_cart_path, method: :post, local: true do |f| %>
+                  <%= hidden_field_tag :product_id, p.id %>
+                  <%= hidden_field_tag :quantity, 1 %>
+                  <%= f.submit "Agregar al carrito", class: "btn btn-outline-dark" %>
+                <% end %>
+              <% end %>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  <% end %>
+    <% end %>
 </div>

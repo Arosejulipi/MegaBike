@@ -35,9 +35,11 @@
           </ul>
 
           <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="/cart"><i class="fa-solid fa-cart-shopping"></i> Carrito</a>
-            </li>
+            <% unless admin? %>
+              <li class="nav-item">
+                <a class="nav-link" href="/cart"><i class="fa-solid fa-cart-shopping"></i> Carrito</a>
+              </li>
+            <% end %>
 
             <% if logged_in? %>
               <% if admin? %>
@@ -97,7 +99,7 @@
 
         <div class="text-muted small">
           &copy; <%= Time.current.year %> MegaBike. Todos los derechos reservados.<br />
-          Las marcas y logos pertenecen a sus respectivos duenos.
+          Las marcas y logos pertenecen a sus respectivos dueños.
           <% if ENV["RENDER_GIT_COMMIT"].present? %>
             <div class="mt-1" style="opacity: 0.7">Build <%= ENV["RENDER_GIT_COMMIT"].to_s[0, 7] %></div>
           <% end %>
@@ -120,7 +122,7 @@
           <div class="mbk-support__head">
             <div>
               <div class="mbk-support__title">Soporte</div>
-              <div class="mbk-support__sub">Respuestas rapidas + WhatsApp</div>
+              <div class="mbk-support__sub">Respuestas rápidas + WhatsApp</div>
             </div>
             <button class="mbk-support__close" id="mbkSupportClose" type="button" aria-label="Cerrar">x</button>
           </div>
@@ -128,7 +130,7 @@
           <div class="mbk-support__chat" id="mbkSupportChat"></div>
 
           <div class="mbk-support__composer">
-            <input id="mbkSupportMsg" class="form-control" placeholder="Escribi tu pregunta..." />
+            <input id="mbkSupportMsg" class="form-control" placeholder="Escribí tu pregunta..." />
             <button id="mbkSupportSend" class="btn btn-dark" type="button">Enviar</button>
           </div>
 

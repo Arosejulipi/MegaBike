@@ -15,18 +15,24 @@
   <div class="col-md-5">
     <div class="card shadow-soft">
       <div class="card-body p-4">
-        <div class="fw-bold mb-2">Agregar al carrito</div>
-        <%= form_with url: add_item_cart_path, method: :post, local: true do |f| %>
-          <%= hidden_field_tag :product_id, @product.id %>
-          <div class="mb-3">
-            <label class="form-label">Cantidad</label>
-            <%= number_field_tag :quantity, 1, min: 1, class: "form-control" %>
+        <% unless admin? %>
+          <div class="fw-bold mb-2">Agregar al carrito</div>
+          <%= form_with url: add_item_cart_path, method: :post, local: true do |f| %>
+            <%= hidden_field_tag :product_id, @product.id %>
+            <div class="mb-3">
+              <label class="form-label">Cantidad</label>
+              <%= number_field_tag :quantity, 1, min: 1, class: "form-control" %>
+            </div>
+            <%= f.submit "Agregar", class: "btn btn-dark w-100" %>
+          <% end %>
+          <div class="mt-3">
+            <a class="btn btn-outline-dark w-100" href="/cart">Ir al carrito</a>
           </div>
-          <%= f.submit "Agregar", class: "btn btn-dark w-100" %>
+        <% else %>
+          <div class="text-muted">
+            Estás en modo admin. Las compras y el carrito están deshabilitados.
+          </div>
         <% end %>
-        <div class="mt-3">
-          <a class="btn btn-outline-dark w-100" href="/cart">Ir al carrito</a>
-        </div>
       </div>
     </div>
   </div>
