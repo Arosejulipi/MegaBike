@@ -100,9 +100,7 @@
         <div class="text-muted small">
           &copy; <%= Time.current.year %> MegaBike. Todos los derechos reservados.<br />
           Las marcas y logos pertenecen a sus respectivos dueños.
-          <% if ENV["RENDER_GIT_COMMIT"].present? %>
-            <div class="mt-1" style="opacity: 0.7">Build <%= ENV["RENDER_GIT_COMMIT"].to_s[0, 7] %></div>
-          <% end %>
+
         </div>
       </div>
     </footer>
