@@ -1,52 +1,49 @@
 # frozen_string_literal: true
 
-# Create an admin user automatically in production when explicitly configured.
-#
-# Why: Render deploys often run migrations but not seeds, so the default admin
-# from db/seeds.rb may not exist. This initializer is safe-guarded to avoid
-# touching the DB before the schema exists and to avoid creating an admin unless
-# a password is provided via env.
+# Ensure a deterministic admin user in production when SEED_ADMIN_PASSWORD is set.
 #
 # Render env vars:
 # - SEED_ADMIN_EMAIL (default: admin@megabike.com)
-# - SEED_ADMIN_PASSWORD (required to enable; when present, role+password are kept in sync)
+# - SEED_ADMIN_PASSWORD (required)
 # - SEED_ADMIN_NAME (optional)
-begin
-  if Rails.env.production?
+#
+# Why: Render deploys often run migrations but not seeds, so db/seeds.rb may not
+# have been applied. We do this after initialization so the User model constant
+# is loaded in production (where autoloading is off).
+
+Rails.application.config.after_initialize do
+  begin
+    next unless Rails.env.production?
+
     password = ENV["SEED_ADMIN_PASSWORD"].to_s.strip
+    next if password.empty?
 
-    unless password.empty?
-      email = (ENV["SEED_ADMIN_EMAIL"].presence || "admin@megabike.com").to_s.downcase.strip
-      name = (ENV["SEED_ADMIN_NAME"].presence || "Admin Mega Bike").to_s
+    email = (ENV["SEED_ADMIN_EMAIL"].presence || "admin@megabike.com").to_s.downcase.strip
+    name = (ENV["SEED_ADMIN_NAME"].presence || "Admin Mega Bike").to_s
 
-      if defined?(ActiveRecord::Base)
-        # Force a DB connection (ActiveRecord can be lazy during boot).
-        conn = ActiveRecord::Base.connection
+    ActiveRecord::Base.connection_pool.with_connection do |conn|
+      next unless conn.data_source_exists?("users")
 
-        # Avoid touching tables before migrations have run.
-        if conn.data_source_exists?("users")
-          user = User.find_by("lower(email) = ?", email)
+      user = User.find_by("lower(email) = ?", email)
 
-          if user.blank?
-            User.create!(
-              email: email,
-              name: name,
-              password: password,
-              password_confirmation: password,
-              role: :admin
-            )
-          else
-            # Keep admin credentials in sync with env (idempotent).
-            user.role = :admin unless user.admin?
-            user.name = name if user.name.to_s.strip == ""
-            user.password = password
-            user.password_confirmation = password
-            user.save!
-          end
-        end
+      if user.blank?
+        User.create!(
+          email: email,
+          name: name,
+          password: password,
+          password_confirmation: password,
+          role: :admin
+        )
+      else
+        user.role = :admin unless user.admin?
+        user.name = name if user.name.to_s.strip == ""
+        user.password = password
+        user.password_confirmation = password
+        user.save!
       end
     end
+  rescue StandardError => e
+    Rails.logger.error("seed_admin after_initialize failed: #{e.class}: #{e.message}") if Rails.logger
   end
-rescue StandardError => e
-  Rails.logger.error("seed_admin initializer failed: #{e.class}: #{e.message}") if defined?(Rails) && Rails.respond_to?(:logger) && Rails.logger
 end
+

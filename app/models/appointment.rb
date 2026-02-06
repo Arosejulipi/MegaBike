@@ -6,15 +6,24 @@ class Appointment < ApplicationRecord
   validate :preferred_time_is_allowed
 
   def self.allowed_time_options
-    morning = build_slots("08:30", "13:30", step_minutes: 30)
-    afternoon = build_slots("16:00", "19:00", step_minutes: 30)
-    morning + afternoon
+    morning_slots + afternoon_slots
   end
 
-  def self.build_slots(start_hhmm, end_hhmm, step_minutes:)
-    start_minutes = to_minutes(start_hhmm)
-    end_minutes = to_minutes(end_hhmm)
-    return [] if start_minutes.nil? || end_minutes.nil? || step_minutes.to_i <= 0
+  def self.morning_slots
+    build_slots_minutes((8 * 60) + 30, (13 * 60) + 30, step_minutes: 30)
+  end
+
+  def self.afternoon_slots
+    build_slots_minutes(16 * 60, 19 * 60, step_minutes: 30)
+  end
+
+  def self.build_slots_minutes(start_minutes, end_minutes, step_minutes:)
+    start_minutes = start_minutes.to_i
+    end_minutes = end_minutes.to_i
+    step_minutes = step_minutes.to_i
+    return [] if step_minutes <= 0
+    return [] if start_minutes <= 0 || end_minutes <= 0
+    return [] if start_minutes > end_minutes
 
     slots = []
     m = start_minutes
@@ -25,15 +34,6 @@ class Appointment < ApplicationRecord
       m += step_minutes
     end
     slots
-  end
-
-  def self.to_minutes(hhmm)
-    parts = hhmm.to_s.split(":")
-    return nil unless parts.length == 2
-    hh = Integer(parts[0], exception: false)
-    mm = Integer(parts[1], exception: false)
-    return nil if hh.nil? || mm.nil?
-    (hh * 60) + mm
   end
 
   private

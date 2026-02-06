@@ -47,12 +47,12 @@
           <%= f.label :preferred_time, "Horario preferido", class: "form-label" %>
           <%= f.select :preferred_time, nil, { include_blank: "Elegir horario..." }, class: "form-select" do %>
             <optgroup label="Manana">
-              <% Appointment.build_slots("08:30", "13:30", step_minutes: 30).each do |t| %>
+              <% Appointment.morning_slots.each do |t| %>
                 <option value="<%= t %>" <%= "selected" if f.object.preferred_time.to_s == t %>><%= t %></option>
               <% end %>
             </optgroup>
             <optgroup label="Tarde">
-              <% Appointment.build_slots("16:00", "19:00", step_minutes: 30).each do |t| %>
+              <% Appointment.afternoon_slots.each do |t| %>
                 <option value="<%= t %>" <%= "selected" if f.object.preferred_time.to_s == t %>><%= t %></option>
               <% end %>
             </optgroup>
@@ -83,4 +83,3 @@
     <% end %>
   </div>
 </div>
-
