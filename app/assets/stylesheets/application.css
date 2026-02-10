@@ -144,10 +144,16 @@ h1, h2, h3, .navbar-brand {
 .mbk-price {
   background: linear-gradient(135deg, var(--mbk-brand) 0%, var(--mbk-brand-2) 100%) !important;
   color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 10px 26px rgba(45, 107, 255, 0.22);
-  padding: 0.45rem 0.65rem;
+  border: 0;
+  box-shadow: none;
+  padding: 0.6rem 0.95rem;
   letter-spacing: 0.01em;
+  font-size: 1.05rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
 }
 
 .mbk-nav-divider {
