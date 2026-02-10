@@ -14,5 +14,17 @@
     </ul>
 
     <div class="fw-bold">Total: $ <%= @order.total.to_i %></div>
+
+    <% phone = (ENV["WHATSAPP_SUPPORT_PHONE"].presence || "+5493412130596") %>
+    <% digits = phone.to_s.gsub(/[^\d]/, "") %>
+    <% msg = "Hola! Soy #{current_user&.name}. Hice la compra ##{@order.id} en Mega Bike y quiero coordinar el pago y el retiro/entrega." %>
+    <% wa_url = digits.present? ? "https://wa.me/#{digits}?text=#{ERB::Util.url_encode(msg)}" : nil %>
+    <% if wa_url.present? %>
+      <div class="mt-3">
+        <a class="btn btn-outline-dark" href="<%= wa_url %>" target="_blank" rel="noopener">
+          <i class="fa-brands fa-whatsapp"></i> Coordinar por WhatsApp
+        </a>
+      </div>
+    <% end %>
   </div>
 </div>

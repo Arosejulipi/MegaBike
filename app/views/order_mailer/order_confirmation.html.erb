@@ -1,0 +1,26 @@
+<h2>Confirmacion de compra</h2>
+
+<p>Hola <%= @order.user.name %>, recibimos tu compra en Mega Bike.</p>
+
+<p>
+  <strong>Pedido:</strong> #<%= @order.id %><br />
+  <strong>Estado:</strong> <%= @order.status %><br />
+  <strong>Fecha:</strong> <%= @order.created_at.strftime("%Y-%m-%d %H:%M") %>
+</p>
+
+<h3>Resumen</h3>
+<ul>
+  <% total = 0 %>
+  <% @order.order_items.includes(:product).each do |it| %>
+    <% subtotal = it.quantity.to_i * it.unit_price.to_f %>
+    <% total += subtotal %>
+    <li>
+      <%= it.quantity %> x <%= it.product.name %> - $ <%= subtotal.to_i %>
+    </li>
+  <% end %>
+</ul>
+
+<p><strong>Total:</strong> $ <%= total.to_i %></p>
+
+<p>Te contactaremos para coordinar pago y retiro/entrega.</p>
+

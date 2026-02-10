@@ -1,0 +1,38 @@
+<h2>Nueva compra en Mega Bike</h2>
+
+<p>
+  <strong>Pedido:</strong> #<%= @order.id %><br />
+  <strong>Cliente:</strong> <%= @order.user.name %> (<%= @order.user.email %>)<br />
+  <strong>Estado:</strong> <%= @order.status %><br />
+  <strong>Fecha:</strong> <%= @order.created_at.strftime("%Y-%m-%d %H:%M") %>
+</p>
+
+<h3>Items</h3>
+<table style="width:100%; border-collapse: collapse;">
+  <thead>
+    <tr>
+      <th style="text-align:left; border-bottom: 1px solid #ddd; padding: 8px;">Producto</th>
+      <th style="text-align:right; border-bottom: 1px solid #ddd; padding: 8px;">Cant.</th>
+      <th style="text-align:right; border-bottom: 1px solid #ddd; padding: 8px;">Precio</th>
+      <th style="text-align:right; border-bottom: 1px solid #ddd; padding: 8px;">Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% total = 0 %>
+    <% @order.order_items.includes(:product).each do |it| %>
+      <% subtotal = it.quantity.to_i * it.unit_price.to_f %>
+      <% total += subtotal %>
+      <tr>
+        <td style="padding: 8px;"><%= it.product.name %></td>
+        <td style="padding: 8px; text-align:right;"><%= it.quantity %></td>
+        <td style="padding: 8px; text-align:right;">$ <%= it.unit_price.to_i %></td>
+        <td style="padding: 8px; text-align:right;">$ <%= subtotal.to_i %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p style="margin-top: 12px;">
+  <strong>Total:</strong> $ <%= total.to_i %>
+</p>
+

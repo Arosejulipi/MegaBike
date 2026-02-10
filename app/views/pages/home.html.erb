@@ -6,18 +6,13 @@
     <div class="col-md-7">
       <h1 class="display-6 fw-bold mb-2">MegaBike</h1>
       <p class="lead text-white-50 mb-4">
-        Bicicletas, repuestos y service. Saca turno online o pedi presupuesto para una bici personalizada.
+        Bicicletas, repuestos y service. Sacá turno online o pedí presupuesto para una bici personalizada.
       </p>
       <div class="d-flex flex-wrap gap-2">
         <a class="btn btn-warning btn-lg" href="/products">Ver productos</a>
         <a class="btn btn-outline-light btn-lg" href="/appointments/new">Servicios</a>
         <a class="btn btn-outline-light btn-lg" href="/custom_quotes/new">Personalizado</a>
       </div>
-      <% if Rails.env.development? %>
-        <div class="text-white-50 small mt-3">
-          Tip: guarda una foto como <code>public/megabike_hero.jpg</code> (o configura <code>HERO_IMAGE_URL</code>).
-        </div>
-      <% end %>
     </div>
 
     <div class="col-md-5">
@@ -25,7 +20,7 @@
         <div class="d-flex gap-3">
           <div class="text-warning fs-2"><i class="fa-solid fa-bicycle"></i></div>
           <div>
-            <div class="fw-bold">Atencion clara</div>
+            <div class="fw-bold">Atención clara</div>
             <div class="text-white-50">Te llega un mail con el detalle del turno o del pedido.</div>
           </div>
         </div>
@@ -49,7 +44,7 @@
       <div class="text-muted">Esta semana: 10% OFF en destacados.</div>
     </div>
     <div class="d-flex gap-2">
-      <a class="btn btn-outline-dark" href="/products">Ver catalogo</a>
+      <a class="btn btn-outline-dark" href="/products">Ver catálogo</a>
       <a class="btn btn-dark" href="/custom_quotes/new">Personaliza tu bicicleta</a>
     </div>
   </div>
@@ -73,7 +68,7 @@
               <div>
                 <div class="fw-bold"><%= p.name %></div>
                 <div class="text-muted small">
-                  <%= [p.brand, p.category].reject { |x| x.to_s.strip == "" }.join(" · ") %>
+                  <%= [p.brand, p.category].reject { |x| x.to_s.strip == "" }.join(" - ") %>
                 </div>
               </div>
               <div class="text-end">
@@ -86,9 +81,8 @@
           </div>
 
           <div class="card-footer bg-white border-0 pb-3">
-            <div class="d-grid gap-2">
+            <div class="d-grid">
               <a class="btn btn-dark" href="/products/<%= p.id %>">Ver detalle</a>
-              <a class="btn btn-outline-dark" href="/custom_quotes/new">Quiero personalizar</a>
             </div>
           </div>
         </div>
@@ -101,11 +95,11 @@
           <div>
             <div class="fw-bold fs-4">Tu bici, a tu medida</div>
             <div class="text-muted">
-              Arma una bici comoda, liviana y con el look que queres. Completa el formulario y te presupuestamos por mail.
+              Armá una bici cómoda, liviana y con el look que querés. Completá el formulario y te presupuestamos por mail.
             </div>
           </div>
           <div class="d-flex gap-2">
-            <a class="btn btn-dark" href="/custom_quotes/new">Empezar personalizacion</a>
+            <a class="btn btn-dark" href="/custom_quotes/new">Empezar personalización</a>
             <a class="btn btn-outline-dark" href="/appointments/new">Pedir turno de service</a>
           </div>
         </div>
@@ -113,3 +107,4 @@
     </div>
   </div>
 </div>
+

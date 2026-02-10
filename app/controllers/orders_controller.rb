@@ -26,6 +26,10 @@ class OrdersController < ApplicationController
 
     session[:cart] = {}
 
+    # Notify owner + client by email (webhook/SMTP via MailerDeliveryService).
+    MailerDeliveryService.deliver(OrderMailer.order_request(order))
+    MailerDeliveryService.deliver(OrderMailer.order_confirmation(order))
+
     redirect_to order_path(order), notice: "Compra registrada! Te contactaremos para coordinar pago y retiro."
   end
 
@@ -46,4 +50,3 @@ class OrdersController < ApplicationController
     end
   end
 end
-
