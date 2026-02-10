@@ -107,6 +107,13 @@ h1, h2, h3, .navbar-brand {
   overflow: hidden;
 }
 
+/* On small screens, it's better to fill the container to avoid "black bars". */
+@media (max-width: 576px) {
+  .mbk-product-card-img {
+    background-size: cover, cover;
+  }
+}
+
 .mbk-product-card-img__placeholder {
   position: absolute;
   inset: 0;
