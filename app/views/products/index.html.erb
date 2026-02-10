@@ -6,27 +6,115 @@
 </div>
 
 <div class="row g-3">
-  <% @products.each do |p| %>
-    <div class="col-12 col-md-4">
-      <div class="card shadow-soft h-100">
-        <div class="card-body">
-          <div class="fw-bold"><%= p.name %></div>
-          <div class="text-muted small"><%= truncate(p.description, length: 100) %></div>
-          <div class="mt-2"><span class="badge text-bg-warning">$ <%= p.price.to_i %></span> <span class="text-muted small">Stock: <%= p.stock %></span></div>
-        </div>
-          <div class="card-footer bg-white border-0 pb-3">
-            <div class="d-grid gap-2">
-              <a class="btn btn-dark" href="/products/<%= p.id %>">Ver detalle</a>
-              <% unless admin? %>
-                <%= form_with url: add_item_cart_path, method: :post, local: true do |f| %>
-                  <%= hidden_field_tag :product_id, p.id %>
-                  <%= hidden_field_tag :quantity, 1 %>
-                  <%= f.submit "Agregar al carrito", class: "btn btn-outline-dark" %>
-                <% end %>
-              <% end %>
+  <div class="col-12 col-lg-3">
+    <div class="card shadow-soft mb-3">
+      <div class="card-body p-3">
+        <div class="fw-bold mb-2">Filtros</div>
+
+        <%= form_with url: products_path, method: :get, local: true do %>
+          <div class="mb-2">
+            <label class="form-label small">Buscar</label>
+            <%= text_field_tag :q, params[:q].to_s, class: "form-control", placeholder: "Ej: casco, frenos..." %>
+          </div>
+
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label small">Min $</label>
+              <%= number_field_tag :min_price, params[:min_price].to_s, class: "form-control", step: 1, min: 0 %>
+            </div>
+            <div class="col-6">
+              <label class="form-label small">Max $</label>
+              <%= number_field_tag :max_price, params[:max_price].to_s, class: "form-control", step: 1, min: 0 %>
             </div>
           </div>
+
+          <div class="mt-2">
+            <label class="form-label small">Marca</label>
+            <%= select_tag :brand,
+                           options_for_select([""] + @brands, params[:brand].to_s),
+                           class: "form-select" %>
+          </div>
+
+          <div class="mt-2">
+            <label class="form-label small">Categoria / Componente</label>
+            <%= select_tag :category,
+                           options_for_select([""] + @categories, params[:category].to_s),
+                           class: "form-select" %>
+          </div>
+
+          <div class="mt-2">
+            <label class="form-label small">Orden</label>
+            <%= select_tag :sort,
+                           options_for_select(
+                             [
+                               ["Nombre", ""],
+                               ["Precio (menor a mayor)", "price_asc"],
+                               ["Precio (mayor a menor)", "price_desc"]
+                             ],
+                             params[:sort].to_s
+                           ),
+                           class: "form-select" %>
+          </div>
+
+          <div class="d-grid gap-2 mt-3">
+            <button class="btn btn-dark" type="submit">Aplicar</button>
+            <a class="btn btn-outline-dark" href="/products">Limpiar</a>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-9">
+    <% if @products.empty? %>
+      <div class="card shadow-soft">
+        <div class="card-body p-4">
+          <div class="fw-bold">No encontramos productos con esos filtros.</div>
+          <div class="text-muted">Probá limpiar los filtros o buscar con otras palabras.</div>
         </div>
       </div>
     <% end %>
+
+    <div class="row g-3">
+      <% @products.each do |p| %>
+        <div class="col-12 col-md-6 col-xl-4">
+          <div class="card shadow-soft h-100">
+            <div class="mbk-product-card-img" style="--mbk-img: url('<%= p.image_url.to_s %>');">
+              <% if p.image_url.to_s.strip == "" %>
+                <div class="mbk-product-card-img__placeholder"><i class="fa-solid fa-bicycle"></i></div>
+              <% end %>
+            </div>
+
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start gap-2">
+                <div>
+                  <div class="fw-bold"><%= p.name %></div>
+                  <div class="text-muted small">
+                    <%= [p.brand, p.category].reject { |x| x.to_s.strip == "" }.join(" · ") %>
+                  </div>
+                </div>
+                <span class="badge text-bg-warning">$ <%= p.price.to_i %></span>
+              </div>
+              <div class="text-muted small mt-2"><%= truncate(p.description, length: 90) %></div>
+              <div class="text-muted small mt-2">Stock: <%= p.stock %></div>
+            </div>
+
+            <div class="card-footer bg-white border-0 pb-3">
+              <div class="d-grid gap-2">
+                <a class="btn btn-dark" href="/products/<%= p.id %>">Ver detalle</a>
+                <% unless admin? %>
+                  <%= form_with url: add_item_cart_path, method: :post, local: true do |f| %>
+                    <%= hidden_field_tag :product_id, p.id %>
+                    <%= hidden_field_tag :quantity, 1 %>
+                    <%= f.submit "Agregar al carrito", class: "btn btn-outline-dark" %>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>
+
