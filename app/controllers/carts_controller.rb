@@ -3,6 +3,8 @@
 class CartsController < ApplicationController
   before_action :block_admin_purchases
 
+  CartItem = Struct.new(:product, :quantity, keyword_init: true)
+
   def show
     @cart = cart
     @items = cart_items
@@ -40,7 +42,7 @@ class CartsController < ApplicationController
   def cart_items
     products = Product.where(id: cart.keys)
     products.map do |p|
-      OpenStruct.new(product: p, quantity: cart[p.id.to_s].to_i)
+      CartItem.new(product: p, quantity: cart[p.id.to_s].to_i)
     end
   end
 end

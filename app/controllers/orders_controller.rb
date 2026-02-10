@@ -4,17 +4,17 @@ class OrdersController < ApplicationController
   before_action :require_login
   before_action :block_admin_purchases
 
+  CartItem = Struct.new(:product, :quantity, keyword_init: true)
+
   def new
     @items = cart_items
-    if @items.empty?
-      redirect_to products_path, alert: "Tu carrito está vacío."
-    end
+    redirect_to products_path, alert: "Tu carrito esta vacio." if @items.empty?
   end
 
   def create
     items = cart_items
     if items.empty?
-      redirect_to products_path, alert: "Tu carrito está vacío."
+      redirect_to products_path, alert: "Tu carrito esta vacio."
       return
     end
 
@@ -26,7 +26,7 @@ class OrdersController < ApplicationController
 
     session[:cart] = {}
 
-    redirect_to order_path(order), notice: "¡Compra registrada! Te contactaremos para coordinar pago y retiro."
+    redirect_to order_path(order), notice: "Compra registrada! Te contactaremos para coordinar pago y retiro."
   end
 
   def show
@@ -42,7 +42,8 @@ class OrdersController < ApplicationController
   def cart_items
     products = Product.where(id: cart.keys)
     products.map do |p|
-      OpenStruct.new(product: p, quantity: cart[p.id.to_s].to_i)
+      CartItem.new(product: p, quantity: cart[p.id.to_s].to_i)
     end
   end
 end
+
