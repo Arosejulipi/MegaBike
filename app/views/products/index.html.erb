@@ -30,16 +30,12 @@
 
           <div class="mt-2">
             <label class="form-label small">Marca</label>
-            <%= select_tag :brand,
-                           options_for_select([""] + @brands, params[:brand].to_s),
-                           class: "form-select" %>
+            <%= select_tag :brand, options_for_select([""] + @brands, params[:brand].to_s), class: "form-select" %>
           </div>
 
           <div class="mt-2">
             <label class="form-label small">Categoria / Componente</label>
-            <%= select_tag :category,
-                           options_for_select([""] + @categories, params[:category].to_s),
-                           class: "form-select" %>
+            <%= select_tag :category, options_for_select([""] + @categories, params[:category].to_s), class: "form-select" %>
           </div>
 
           <div class="mt-2">
@@ -93,7 +89,7 @@
                     <%= [p.brand, p.category].reject { |x| x.to_s.strip == "" }.join(" · ") %>
                   </div>
                 </div>
-                <span class="badge text-bg-warning">$ <%= p.price.to_i %></span>
+                <span class="badge mbk-price">$ <%= p.price.to_i %></span>
               </div>
               <div class="text-muted small mt-2"><%= truncate(p.description, length: 90) %></div>
               <div class="text-muted small mt-2">Stock: <%= p.stock %></div>

@@ -99,8 +99,10 @@ h1, h2, h3, .navbar-brand {
   background-image:
     linear-gradient(135deg, rgba(11, 16, 32, 0.40) 0%, rgba(18, 26, 47, 0.55) 55%, rgba(12, 15, 26, 0.70) 100%),
     var(--mbk-img);
-  background-size: cover;
-  background-position: center;
+  /* Gradient covers; product image fits (less zoom). */
+  background-size: cover, contain;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
   position: relative;
   overflow: hidden;
 }
@@ -125,10 +127,28 @@ h1, h2, h3, .navbar-brand {
   background-image:
     linear-gradient(135deg, rgba(11, 16, 32, 0.40) 0%, rgba(18, 26, 47, 0.55) 55%, rgba(12, 15, 26, 0.70) 100%),
     var(--mbk-img);
-  background-size: cover;
-  background-position: center;
+  background-size: cover, contain;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
   position: relative;
   overflow: hidden;
+}
+
+.mbk-price {
+  background: linear-gradient(135deg, var(--mbk-brand) 0%, var(--mbk-brand-2) 100%) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 26px rgba(45, 107, 255, 0.22);
+  padding: 0.45rem 0.65rem;
+  letter-spacing: 0.01em;
+}
+
+.mbk-nav-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.22);
+  display: inline-block;
+  margin: 0 0.4rem;
 }
 
 .mbk-product-media__placeholder {
