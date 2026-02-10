@@ -25,7 +25,30 @@ Entrar a: `http://localhost:3000`
 
 ### Usuario admin (seed)
 - Email: `admin@megabike.com`
-- Password: `admin1234`
+- Password: `admin12345`
+
+## Imagenes de productos (Cloudinary - recomendado)
+Los productos guardan la foto como `image_url` (un link).
+Para no depender de SMTP/archivos, se recomienda Cloudinary (plan gratis).
+
+### 1) Cloudinary: crear preset unsigned
+1) Crear una cuenta en Cloudinary
+2) Ir a **Settings -> Upload**
+3) Crear un **Upload preset**:
+   - Mode: **Unsigned**
+   - (opcional) Folder: `megabike/products`
+   - (opcional) Allowed formats: jpg/png/webp
+
+### 2) Render: variables de entorno
+Agregar en Render:
+- `CLOUDINARY_CLOUD_NAME` = tu cloud name (ej: `dxxxxx`)
+- `CLOUDINARY_UPLOAD_PRESET` = nombre del preset unsigned (ej: `megabike_unsigned`)
+- (opcional) `CLOUDINARY_FOLDER` = `megabike/products`
+
+### 3) Admin: subir foto desde el form
+En `/admin/products/new` o editar:
+- Elegir archivo en "Subir foto" y automaticamente se sube a Cloudinary
+- El sistema completa `Foto (URL)` con la URL final
 
 ## Email en desarrollo
 En desarrollo el mailer esta configurado con `letter_opener_web`.
