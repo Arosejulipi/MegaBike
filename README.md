@@ -1,147 +1,67 @@
-# Mega Bike (Ruby on Rails)
+# MegaBike (Ruby on Rails)
 
-Aplicacion web para una bicicleteria llamada **Mega Bike**.
-
-Incluye:
-- Home / Nosotros
-- Productos (publico, sin registro) + carrito + compra simple (sin pasarela de pago)
-- Servicios: agenda de turnos + emails (negocio y cliente)
-- Personalizado: presupuesto de bici personalizada + email al negocio
+Aplicacion web de ejemplo para una bicicleteria/e-commerce liviano, con:
+- Home + pagina "Nosotros"
+- Catalogo de productos con filtros (marca, categoria, precio, busqueda)
+- Carrito y compra simple (sin pasarela de pago)
+- Turnos de service (notifica al negocio y al cliente por email)
+- Pedidos de bicicletas personalizadas (presupuesto por email)
 - Login/registro de clientes + rol admin
-- FAQ simple
+- Panel admin para gestionar productos
 
-## Requisitos (en tu PC)
-- Ruby 3.1+ (ideal 3.2+)
+## Stack / como se desarrollo
+- Ruby on Rails 7
+- Bootstrap 5 (UI)
+- PostgreSQL en produccion (Render)
+- Envio de emails en produccion via Webhook HTTPS (pensado para entornos donde SMTP falla)
+- Subida de imagenes de productos via Cloudinary (opcional, recomendado)
+
+## Requisitos (local)
+- Ruby 3.2+
 - Bundler
+- SQLite (dev/test)
 
-## Setup rapido
+## Setup rapido (local)
 ```bash
 bundle install
 bin/rails db:create db:migrate db:seed
 bin/rails s
 ```
+Abrir: `http://localhost:3000`
 
-Entrar a: `http://localhost:3000`
+## Produccion (Render): base de datos
+En produccion se usa `DATABASE_URL` (PostgreSQL). Un deploy NO borra la base de datos (salvo que se elimine/resetee la DB).
 
-### Usuario admin (seed)
-- Email: `admin@megabike.com`
-- Password: `admin12345`
+## Admin (produccion)
+Para evitar dejar credenciales fijas en produccion, el proyecto soporta crear/actualizar un admin al iniciar, via variables de entorno:
+- `SEED_ADMIN_EMAIL` (default: `admin@megabike.com`)
+- `SEED_ADMIN_PASSWORD` (requerida para activar el seed)
+- `SEED_ADMIN_NAME` (opcional)
 
-## Imagenes de productos (Cloudinary - recomendado)
+Recomendacion: configurar estas variables en Render y cambiar la password por una propia.
+
+## Imagenes de productos
 Los productos guardan la foto como `image_url` (un link).
-Para no depender de SMTP/archivos, se recomienda Cloudinary (plan gratis).
 
-### 1) Cloudinary: crear preset unsigned
+### Opcion A (recomendado): Cloudinary (gratis)
 1) Crear una cuenta en Cloudinary
-2) Ir a **Settings -> Upload**
-3) Crear un **Upload preset**:
-   - Mode: **Unsigned**
-   - (opcional) Folder: `megabike/products`
-   - (opcional) Allowed formats: jpg/png/webp
+2) Settings -> Upload -> Upload presets -> crear preset:
+   - Signing Mode: **Unsigned**
+3) En Render cargar:
+   - `CLOUDINARY_CLOUD_NAME`
+   - `CLOUDINARY_UPLOAD_PRESET`
+   - (opcional) `CLOUDINARY_FOLDER` (ej: `megabike/products`)
+4) En el panel Admin -> Productos, podes subir un archivo y el sistema completa automaticamente la URL.
 
-### 2) Render: variables de entorno
-Agregar en Render:
-- `CLOUDINARY_CLOUD_NAME` = tu cloud name (ej: `dxxxxx`)
-- `CLOUDINARY_UPLOAD_PRESET` = nombre del preset unsigned (ej: `megabike_unsigned`)
-- (opcional) `CLOUDINARY_FOLDER` = `megabike/products`
+### Opcion B: servir imagenes desde la propia app
+Podes commitear imagenes en `public/productos/` y usar URLs relativas, por ejemplo:
+- `/productos/cubierta.png`
+- `/productos/transmisioncompleta.png`
 
-### 3) Admin: subir foto desde el form
-En `/admin/products/new` o editar:
-- Elegir archivo en "Subir foto" y automaticamente se sube a Cloudinary
-- El sistema completa `Foto (URL)` con la URL final
-
-## Email en desarrollo
-En desarrollo el mailer esta configurado con `letter_opener_web`.
-Ver emails en: `http://localhost:3000/letter_opener`
-
-## Produccion (Render): variables de entorno (SMTP)
-Importante: Render no trae un SMTP gratis. Para enviar emails en produccion necesitas configurar un SMTP (por ejemplo Gmail).
-
-Variables minimas:
-- `ADMIN_EMAILS` (a donde le llega al negocio, uno o varios separados por coma)
-- `DEFAULT_FROM_EMAIL` (remitente)
-- `APP_HOST` (ej: `megabike.onrender.com`)
-- `APP_PROTOCOL` = `https`
-
-SMTP (Gmail):
-- `SMTP_ADDRESS` = `smtp.gmail.com`
-- `SMTP_PORT` = `587`
-- `SMTP_USERNAME` = tu gmail completo (ej: `ayleeenmaliandi@gmail.com`)
-- `SMTP_PASSWORD` = App Password de Google (no es tu clave normal)
-- `SMTP_AUTHENTICATION` = `plain`
-- `SMTP_ENABLE_STARTTLS_AUTO` = `true`
-
-Nota: para obtener `SMTP_PASSWORD` en Gmail, Google pide tener activada la verificacion en 2 pasos y luego crear una "contrasena de aplicacion".
-
-Importante: no uses Postmark. Si en Render tenes cargada la variable `POSTMARK_API_TOKEN`, borrala para evitar que el deploy anterior intente usar Postmark.
-
-## Render (gratis): alternativa recomendada (sin SMTP) - Webhook por HTTPS
-En el plan gratis de Render es comun que las conexiones SMTP (por ejemplo a `smtp.gmail.com:587`) fallen con `Net::OpenTimeout`.
-La alternativa mas simple es enviar emails por HTTPS a un Webhook.
-
-Este proyecto soporta un webhook por variables:
-- `EMAIL_WEBHOOK_URL` (URL de tu webhook)
+## Email en produccion (Render)
+En el plan gratis de Render es comun que conexiones SMTP fallen. Este proyecto soporta envio por Webhook HTTPS:
+- `EMAIL_WEBHOOK_URL`
 - `EMAIL_WEBHOOK_TOKEN` (opcional, recomendado)
 
-Backend recomendado (gratis): Google Apps Script (usa tu Gmail).
-1) Ir a https://script.google.com/ y crear un proyecto
-2) Pegar este codigo:
-```javascript
-const TOKEN = PropertiesService.getScriptProperties().getProperty("EMAIL_WEBHOOK_TOKEN") || "";
+Backend recomendado (gratis): Google Apps Script (GmailApp.sendEmail).
 
-function handleSend(to, subject, textBody, htmlBody) {
-  GmailApp.sendEmail(to, subject, textBody || " ", { htmlBody: htmlBody || "" });
-  return ContentService.createTextOutput("OK").setMimeType(ContentService.MimeType.TEXT);
-}
-
-function isAuthorized(e) {
-  const auth = (e && e.parameter && e.parameter.token) ? e.parameter.token : "";
-  const header = (e && e.headers && (e.headers.Authorization || e.headers.authorization)) || "";
-  const bearer = header.startsWith("Bearer ") ? header.slice(7) : "";
-  const token = bearer || auth || "";
-  return !(TOKEN && token !== TOKEN);
-}
-
-// GET is recommended (works reliably with Apps Script hosting redirects).
-function doGet(e) {
-  try {
-    if (!isAuthorized(e)) {
-      return ContentService.createTextOutput("Unauthorized").setMimeType(ContentService.MimeType.TEXT);
-    }
-
-    const to = ((e && e.parameter && e.parameter.to) || "").toString();
-    const subject = ((e && e.parameter && e.parameter.subject) || "").toString();
-    const htmlBody = ((e && e.parameter && e.parameter.html) || "").toString();
-    const textBody = ((e && e.parameter && e.parameter.text) || "").toString();
-
-    return handleSend(to, subject, textBody, htmlBody);
-  } catch (err) {
-    return ContentService.createTextOutput("ERR: " + err).setMimeType(ContentService.MimeType.TEXT);
-  }
-}
-
-// Optional: POST support (not always reliable depending on redirects)
-function doPost(e) {
-  try {
-    if (!isAuthorized(e)) {
-      return ContentService.createTextOutput("Unauthorized").setMimeType(ContentService.MimeType.TEXT);
-    }
-
-    const data = JSON.parse((e && e.postData && e.postData.contents) || "{}");
-    const to = (data.to || "").toString();
-    const subject = (data.subject || "").toString();
-    const htmlBody = (data.html || "").toString();
-    const textBody = (data.text || "").toString();
-
-    return handleSend(to, subject, textBody, htmlBody);
-  } catch (err) {
-    return ContentService.createTextOutput("ERR: " + err).setMimeType(ContentService.MimeType.TEXT);
-  }
-}
-```
-3) En el menu: Project Settings -> Script properties, crear `EMAIL_WEBHOOK_TOKEN` con un valor random
-4) Deploy -> New deployment -> Web app
-   - Execute as: Me
-   - Who has access: Anyone
-5) Copiar la URL del deployment y ponerla en Render como `EMAIL_WEBHOOK_URL`
-6) Poner el mismo token en Render como `EMAIL_WEBHOOK_TOKEN`
