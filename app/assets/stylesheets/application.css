@@ -140,6 +140,10 @@ h1, h2, h3, .navbar-brand {
   font-size: 52px;
 }
 
+.mbk-product-media--empty {
+  background: linear-gradient(135deg, #0b1020 0%, #121a2f 55%, #0c0f1a 100%);
+}
+
 /* Admin product previews */
 .mbk-admin-thumb {
   width: 72px;
