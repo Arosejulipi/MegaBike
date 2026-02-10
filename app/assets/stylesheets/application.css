@@ -142,7 +142,8 @@ h1, h2, h3, .navbar-brand {
 }
 
 .mbk-price {
-  background: linear-gradient(135deg, var(--mbk-brand) 0%, var(--mbk-brand-2) 100%) !important;
+  /* Match the "Ver detalle" button (btn-dark). */
+  background: #0b1220 !important;
   color: white !important;
   border: 0;
   box-shadow: none;
